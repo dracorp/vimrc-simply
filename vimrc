@@ -112,7 +112,11 @@ if !has('compatible')
         Plug 'https://github.com/vim-scripts/taglist.vim' " Source code browser (supports C/C++, java, perl, python, tcl, sql, php, etc)
         Plug 'https://github.com/xolox/vim-easytags' " Automated tag file generation and syntax highlighting of tags in Vim
     endif
-    Plug 'https://github.com/sheerun/vim-polyglot'
+    if v:version >= 800
+        " vim-polyglot: g:polyglot_disabled should be defined before loading vim-polyglot
+        let g:polyglot_disabled = ['csv', 'jenkins', 'yaml']
+        Plug 'https://github.com/sheerun/vim-polyglot'                    " A solid language pack for Vim
+    endif
     Plug 'https://github.com/Shougo/vimproc.vim', {'do' : 'make'} " Interactive command execution in Vim
     Plug 'https://github.com/osyo-manga/vim-over' " :substitute preview
     " Plug 'https://github.com/itchyny/vim-cursorword' " Underlines the word under the cursor
