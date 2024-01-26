@@ -179,10 +179,13 @@ if !has('compatible')
     Plug 'https://github.com/sukima/xmledit'
     " Git
     if executable('git')
-        " Plug 'https://github.com/airblade/vim-gitgutter'    " shows git diff markers in the sign column and stages/previews/undoes hunks and partial hunks
         Plug 'https://github.com/tpope/vim-fugitive'        " A Git wrapper so awesome, it should be illegal
         Plug 'https://github.com/rhysd/committia.vim'       " A Vim plugin for more pleasant editing on commit messages
-        Plug 'https://github.com/mhinz/vim-signify', { 'tag': 'legacy' } " ➕ Show a diff using Vim its sign column.
+        if has('nvim') || has('patch-8.0.902')
+            Plug 'https://github.com/mhinz/vim-signify' " ➕ Show a diff using Vim its sign column.
+        else
+            Plug 'https://github.com/mhinz/vim-signify', { 'tag': 'legacy' }
+        endif
     endif
     if v:version >= 740
         Plug 'https://github.com/WolfgangMehner/git-support'
@@ -401,6 +404,11 @@ inoremap <Up> <C-o>gk
 
 "## Plugins configuration {{{
 
+"" Plugin: vim-signify {{{
+" default updatetime 4000ms is not good for async update
+set updatetime=100
+"" }}}
+
 "" Plugin: vim-shfmt {{{
 " :Shfmt
 " gq for paragraph
@@ -437,23 +445,25 @@ if g:PYTHON && has('job') && has('timers') && has('lambda')
     " Never type the same word twice and maybe learn a new spellings!
     " Use the Linux dictionary when spelling is in doubt.
     function! Tab_Or_Complete() abort
-    " If completor is already open the `tab` cycles through suggested completions.
-    if pumvisible()
-        return "\<C-N>"
-    " If completor is not open and we are in the middle of typing a word then
-    " `tab` opens completor menu.
-    elseif col('.')>1 && strpart( getline('.'), col('.')-2, 3 ) =~# '^[[:keyword:][:ident:]]'
-        return "\<C-R>=completor#do('complete')\<CR>"
-    else
-        " If we aren't typing a word and we press `tab` simply do the normal `tab`
-        " action.
-        return "\<Tab>"
-    endif
+        " If completor is already open the `tab` cycles through suggested completions.
+        if pumvisible()
+            return "\<C-N>"
+        " If completor is not open and we are in the middle of typing a word then
+        " `tab` opens completor menu.
+        elseif col('.')>1 && strpart( getline('.'), col('.')-2, 3 ) =~# '^[[:keyword:][:ident:]]'
+            return "\<C-R>=completor#do('complete')\<CR>"
+        else
+            " If we aren't typing a word and we press `tab` simply do the normal `tab`
+            " action.
+            return "\<Tab>"
+        endif
     endfunction
 
     " Use `tab` key to select completions.  Default is arrow keys.
     inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
     inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+    inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
+    inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
 
     " Use tab to trigger auto completion.  Default suggests completions as you type.
     let g:completor_auto_trigger = 0
