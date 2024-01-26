@@ -375,8 +375,8 @@ nnoremap Q gqap
 vmap <silent> // y/<C-R>=escape(@", '\\/.*$^~[]')<CR><CR>
 
 " change search mapping and don't jump
-" nnoremap * g*``
-" nnoremap # g#``
+nnoremap * g*``
+nnoremap # g#``
 " nnoremap g* *``
 " nnoremap g# #``
 
@@ -401,12 +401,14 @@ vnoremap <Down> gj
 vnoremap <Up> gk
 inoremap <Up> <C-o>gk
 inoremap <Up> <C-o>gk
-
+let g:pluginIsEnabledDirectory = VIMRC . '/plugged'
 "## Plugins configuration {{{
 
 "" Plugin: vim-signify {{{
-" default updatetime 4000ms is not good for async update
-set updatetime=100
+if plugin#isEnabled('vim-signify')
+    " default updatetime 4000ms is not good for async update
+    set updatetime=100
+endif
 "" }}}
 
 "" Plugin: vim-shfmt {{{
@@ -903,3 +905,4 @@ nnoremap <silent> <F9> :call HexEditToggle()<CR>
         source ~/.config/vim/local.vim
     endif
 "" }}}
+
