@@ -69,6 +69,7 @@ if !has('compatible')
     Plug 'https://github.com/scrooloose/nerdcommenter'
     " Plug 'https://github.com/tpope/vim-commentary'
     Plug 'https://github.com/tpope/vim-scriptease'
+    Plug 'https://github.com/tweekmonster/helpful.vim' " 📓 Display vim version numbers in docs
     Plug 'https://github.com/ConradIrwin/vim-bracketed-paste'
     Plug 'https://github.com/godlygeek/tabular' " Vim script for text filtering and alignment
     Plug 'https://github.com/pbrisbin/vim-restore-cursor'
@@ -99,6 +100,7 @@ if !has('compatible')
     Plug 'https://github.com/mbbill/fencview'
     Plug 'https://github.com/lilydjwg/colorizer' " A Vim plugin to colorize all text in the form #rrggbb or #rgb
     Plug 'https://github.com/xu-cheng/brew.vim' " 🍺 Vim Syntax for Homebrew formulae
+    Plug 'https://github.com/cespare/vim-toml'
     Plug 'https://github.com/vim-scripts/FavMenu.vim' " A new menu, like IE's Favourites, or Netscape's Bookmark
     Plug 'https://github.com/vim-scripts/FavEx' " Favorite file and directory explorer
     Plug 'https://github.com/dracorp/vim-pkgbuild' " easy work with ArchLinux PKGBUILD
@@ -155,6 +157,8 @@ if !has('compatible')
             Plug 'https://github.com/ervandew/supertab'
         endif
     endif
+    Plug 'https://github.com/tenfyzhong/CompleteParameter.vim'
+    Plug 'https://github.com/Raimondi/delimitMate'
     " Docker
     Plug 'https://github.com/wsdjeg/vim-dockerfile'
     " Groovy
@@ -203,6 +207,10 @@ if !has('compatible')
         Plug 'https://github.com/justinhoward/fzf-neoyank'
     endif
     Plug 'https://github.com/Donaldttt/fuzzyy'
+    Plug 'https://github.com/luochen1990/rainbow'
+    Plug 'https://github.com/MattesGroeger/vim-bookmarks'
+    Plug 'https://github.com/dhruvasagar/vim-table-mode'
+    Plug 'https://github.com/tpope/vim-surround'
 
     " vim-devicons should be at the end
     Plug 'https://github.com/ryanoasis/vim-devicons'
@@ -408,6 +416,11 @@ inoremap <Up> <C-o>gk
 let g:pluginIsEnabledDirectory = VIMRC . '/plugged'
 "## Plugins configuration {{{
 
+"" Plugin: rainbow
+let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
+"" Plugin: helpful {{{
+let b:helpful=1
+"" }}}
 "" Plugin: vim-signify {{{
 if plugin#isEnabled('vim-signify')
     " default updatetime 4000ms is not good for async update
@@ -472,7 +485,7 @@ if g:PYTHON && has('job') && has('timers') && has('lambda')
     inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
 
     " Use tab to trigger auto completion.  Default suggests completions as you type.
-    let g:completor_auto_trigger = 0
+    let g:completor_auto_trigger = 1
     inoremap <expr> <Tab> Tab_Or_Complete()
 
     let g:completor_complete_options = 'menuone,noselect,preview'
@@ -529,6 +542,14 @@ else
         " supertab
     endif
 endif
+
+"" Plugin: CompleteParameter.vim {{{
+inoremap <silent><expr> ( complete_parameter#pre_complete("()")
+smap <c-j> <Plug>(complete_parameter#goto_next_parameter)
+imap <c-j> <Plug>(complete_parameter#goto_next_parameter)
+smap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
+imap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
+"" }}}
 
 "" Plugin: NERD Commenter {{{
     " Create default mappings
