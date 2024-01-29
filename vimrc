@@ -23,7 +23,7 @@ let g:MACOS   = has('mac')
 let g:PYTHON3 = has('python3')
 let g:PYTHON  = has('python') || has('python3')
 let g:OS      = substitute(system('uname'), '\n', '', '')
-let g:VIMRC   = expand('%:p:h')
+let g:VIMRC   = expand('<sfile>:p:h')
 
 if has('multi_byte')
     let g:UNICODE = 0
@@ -62,13 +62,13 @@ if !has('compatible')
 
     call plug#begin()
     " Plugins definition
-    Plug 'https://github.com/junegunn/vim-plug'
+    Plug 'https://github.com/junegunn/vim-plug' " 🌺 Minimalist Vim Plugin Manager
     Plug 'https://github.com/tpope/vim-sensible' " Defaults everyone can agree on
-    Plug 'https://github.com/preservim/nerdtree.git'
+    Plug 'https://github.com/preservim/nerdtree.git' " A tree explorer plugin for vim
     Plug 'https://github.com/PhilRunninger/nerdtree-buffer-ops' " A plugin for highlighting and closing open buffers while in the NERDTree
     Plug 'https://github.com/tiagofumo/vim-nerdtree-syntax-highlight' " Extra syntax and highlight for nerdtree files
-    Plug 'https://github.com/scrooloose/nerdcommenter'
-    " Plug 'https://github.com/tpope/vim-commentary'
+    Plug 'https://github.com/scrooloose/nerdcommenter' " Vim plugin for intensely nerdy commenting powers
+    Plug 'https://github.com/tpope/vim-commentary' " comment stuff out
     Plug 'https://github.com/tpope/vim-scriptease'
     " Plug 'https://github.com/tweekmonster/helpful.vim'
     Plug 'https://github.com/NeonVim/helpful.vim' " 📓 Display vim version numbers in docs
@@ -146,23 +146,41 @@ if !has('compatible')
     Plug 'https://github.com/itspriddle/vim-shellcheck'
     Plug 'https://github.com/z0mbix/vim-shfmt'
     " Tab complete
+    let g:tab_complete = 'coc'
     " Completor
-    if g:PYTHON && has('job') && has('timers') && has('lambda')
-        Plug 'https://github.com/maralla/completor.vim'
-        Plug 'https://github.com/maralla/completor-neosnippet'
+    if g:tab_complete ==# 'completor'
+                \ && g:PYTHON && has('job') && has('timers') && has('lambda')
+        Plug 'https://github.com/maralla/completor.vim' " Async completion framework made ease
+        Plug 'https://github.com/maralla/completor-neosnippet' " Neosnippet completion support for completor.vim
+        Plug 'https://github.com/kyouryuukunn/completor-necosyntax' "
+        Plug 'https://github.com/kyouryuukunn/completor-necovim'
     endif
-    if (v:version >= 703 && has('patch885') && has('lua')) && (v:version >= 802 && (v:version == 802 && has('patch1066')))
+    if g:tab_complete ==# 'neocomplete'
+                \ && (v:version >= 703 && has('patch885') && has('lua')) && (v:version >= 802 && (v:version == 802 && has('patch1066')))
         Plug 'https://github.com/Shougo/neocomplete.vim' " Next generation completion framework after neocomplcache
         Plug 'https://github.com/Shougo/vimshell.vim' " 🐚 Powerful shell implemented by vim
         Plug 'https://github.com/Shougo/neco-vim' "The Vim Script completion source for neocomplete/deoplete/ddc
         Plug 'https://github.com/tenfyzhong/CompleteParameter.vim' " Complete parameter after select the completion. Integration with YouCompleteMe(ycm), deoplete, neocomplete
     endif
-    Plug 'https://github.com/ervandew/supertab'
-    Plug 'https://github.com/Raimondi/delimitMate'
+    if g:tab_complete ==# 'supertab'
+        Plug 'https://github.com/ervandew/supertab' " Perform all your vim insert mode completions with Tab
+    endif
+    if g:tab_complete ==# 'deoplete'
+        Plug 'https://github.com/Shougo/deoplete.nvim'
+        Plug 'roxma/nvim-yarp'
+        Plug 'roxma/vim-hug-neovim-rpc'
+    endif
+    if g:tab_complete ==# 'coc'
+        Plug 'https://github.com/Shougo/neco-vim' " The Vim Script completion source for neocomplete/deoplete/ddc
+        Plug 'https://github.com/neoclide/coc-neco' " viml completion source for coc.nvim
+        Plug 'https://github.com/neoclide/coc.nvim', {'branch': 'release'}
+        Plug 'https://github.com/neoclide/coc-snippets'
+    endif
+    Plug 'https://github.com/Raimondi/delimitMate' " Vim plugin, provides insert mode auto-completion for quotes, parens, brackets, etc.
     " Snippets
-    Plug 'https://github.com/Shougo/neosnippet.vim'
-    Plug 'https://github.com/Shougo/neosnippet-snippets'
-    Plug 'https://github.com/honza/vim-snippets'
+    Plug 'https://github.com/Shougo/neosnippet.vim' " neo-snippet plugin
+    Plug 'https://github.com/Shougo/neosnippet-snippets' " The standard snippets repository for neosnippet
+    Plug 'https://github.com/honza/vim-snippets' " vim-snipmate default snippets (Previously snipmate-snippets)
     " Docker
     Plug 'https://github.com/wsdjeg/vim-dockerfile'
     " Groovy
@@ -412,14 +430,26 @@ nnoremap j gj
 nnoremap k gk
 vnoremap j gj
 vnoremap k gk
-nnoremap <Down> gj
-nnoremap <Up> gk
-vnoremap <Down> gj
-vnoremap <Up> gk
-inoremap <Up> <C-o>gk
-inoremap <Up> <C-o>gk
+" nnoremap <Down> gj
+" nnoremap <Up> gk
+" vnoremap <Down> gj
+" vnoremap <Up> gk
+" inoremap <Up> <C-o>gk
+" inoremap <Up> <C-o>gk
 let g:pluginIsEnabledDirectory = VIMRC . '/plugged'
+let g:pluginIsEnabledVerbose = 0
+
 "## Plugins configuration {{{
+
+"" Plugin: vim-commentary {{{
+if plugin#isEnabled('vim-commentary')
+    augroup vim_commentary
+        au!
+        autocmd FileType apache setlocal commentstring=#\ %s
+        autocmd FileType dosini setlocal commentstring=#\ %s
+    augroup END
+endif
+"" }}}
 
 "" Plugin: vim-table-mode {{{
 if plugin#isEnabled('vim-table-mode')
@@ -479,8 +509,8 @@ let g:better_whitespace_enabled=1
 let g:strip_whitespace_on_save=1
 "" }}}
 
-if g:PYTHON && has('job') && has('timers') && has('lambda')
-    "" Plugin: Completor {{{
+"" Plugin: Completor {{{
+if plugin#isEnabled('completor.vim')
     " Use TAB to complete when typing words, else inserts TABs as usual.  Uses
     " dictionary, source files, and completor to find matching words to complete.
 
@@ -507,72 +537,135 @@ if g:PYTHON && has('job') && has('timers') && has('lambda')
     inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
     inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
     inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
+    " Close popup by <Space>.
+    inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
+    inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<cr>"
 
     " Use tab to trigger auto completion.  Default suggests completions as you type.
-    let g:completor_auto_trigger = 1
+    let g:completor_auto_trigger = 0
     inoremap <expr> <Tab> Tab_Or_Complete()
+endif
+"" }}}
+if plugin#isEnabled('deoplete.vim')
+    let g:deoplete#enable_at_startup = 1
+endif
 
-    let g:completor_complete_options = 'menuone,noselect,preview'
+if plugin#isEnabled('coc.nvim')
+    let g:coc_global_extensions = [
+                \ 'coc-omni',
+                \ 'coc-ultisnips',
+                \ 'coc-snippets',
+                \ 'coc-json'
+                \]
+    " Use tab for trigger completion with characters ahead and navigate
+    " NOTE: There's always complete item selected by default, you may want to enable
+    " no select by `"suggest.noselect": true` in your configuration file
+    " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+    " other plugin before putting this into your config
+    inoremap <silent><expr> <TAB>
+        \ coc#pum#visible() ? coc#pum#next(1) :
+        \ CheckBackspace() ? "\<Tab>" :
+        \ coc#refresh()
+    inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
-"    noremap <silent> <leader>d :call completor#do('definition')<CR>
-"    noremap <silent> <leader>c :call completor#do('doc')<CR>
-"    noremap <silent> <leader>f :call completor#do('format')<CR>
-"    noremap <silent> <leader>s :call completor#do('hover')<CR>
-    "" }}}
-else
-    if (v:version >= 703 && has('patch885') && has('lua')) && (v:version >= 802 && (v:version == 802 && has('patch1066')))
-        "" Plugin: neocomplete {{{
-        " Use neocomplete.
-        let g:neocomplete#enable_at_startup = 1
-        " Use smartcase.
-        let g:neocomplete#enable_smart_case = 1
-        " Set minimum syntax keyword length.
-        let g:neocomplete#sources#syntax#min_keyword_length = 2
+    " You have to remap <cr> to make it confirm completion.
+    inoremap <expr> <cr> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 
-        " Plugin key-mappings.
-        inoremap <expr><C-g>     neocomplete#undo_completion()
-        inoremap <expr><C-l>     neocomplete#complete_common_string()
+    " use <c-space> for trigger completion
+    inoremap <silent><expr> <c-space> coc#refresh()
 
-        " Recommended key-mappings.
-        " <CR>: close popup and save indent.
-        inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-        function! s:my_cr_function()
-            " return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
-            " For no inserting <CR> key.
-            return pumvisible() ? "\<C-y>" : "\<CR>"
-        endfunction
-        " <TAB>: completion.
-        inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-        " <C-h>, <BS>: close popup and delete backword char.
-        inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-        inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-        " Close popup by <Space>.
-        inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
+    function! CheckBackspace() abort
+        let col = col('.') - 1
+        return !col || getline('.')[col - 1]  =~# '\s'
+    endfunction
 
-        " AutoComplPop like behavior.
-        "let g:neocomplete#enable_auto_select = 1
+    " Use K to show documentation in preview window
+    nnoremap <silent> K :call ShowDocumentation()<CR>
 
-        " Enable omni completion.
-        augroup omni_completion_neocomplete
-            autocmd!
-            autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-            autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-            autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-            autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-            autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-        augroup END
-        "" }}}
+    function! ShowDocumentation()
+    if CocAction('hasProvider', 'hover')
+        call CocActionAsync('doHover')
     else
-        " supertab
+        call feedkeys('K', 'in')
     endif
+    endfunction
+
+    " Use <C-l> for trigger snippet expand.
+    imap <C-l> <Plug>(coc-snippets-expand)<cr>
+endif
+
+"" Plugin: neocomplete {{{
+if plugin#isEnabled('neocomplete.vim')
+    " Use neocomplete.
+    let g:neocomplete#enable_at_startup = 1
+    " Use smartcase.
+    let g:neocomplete#enable_smart_case = 1
+    " Set minimum syntax keyword length.
+    let g:neocomplete#sources#syntax#min_keyword_length = 2
+
+    " Plugin key-mappings.
+    inoremap <expr><C-g>     neocomplete#undo_completion()
+    inoremap <expr><C-l>     neocomplete#complete_common_string()
+
+    " Recommended key-mappings.
+    " <CR>: close popup and save indent.
+    inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+    function! s:my_cr_function()
+        " return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
+        " For no inserting <CR> key.
+        return pumvisible() ? "\<C-y>" : "\<CR>"
+    endfunction
+    " <TAB>: completion.
+    inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+    inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
+    inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
+    " Close popup by <Space>.
+    inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
+    inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<cr>"
+
+    " <C-h>, <BS>: close popup and delete backword char.
+    inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+    inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+
+    " AutoComplPop like behavior.
+    "let g:neocomplete#enable_auto_select = 1
+
+    " Enable omni completion.
+    augroup omni_completion_neocomplete
+        autocmd!
+        autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+        autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+        autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+        autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+        autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+    augroup END
+    "" }}}
+endif
+"" Plugin: supertab
+if plugin#isEnabled('supertab')
+    let g:SuperTabDefaultCompletionType = 'context'
+    let g:SuperTabCompletionContexts = ['s:ContextText', 's:ContextDiscover']
+    let g:SuperTabContextTextOmniPrecedence = ['&omnifunc', '&completefunc']
+    let g:SuperTabContextDiscoverDiscovery =
+            \ ['&completefunc:<c-p>', '&omnifunc:<c-x><c-o>']
+    augroup omni_completion_supertab
+        autocmd FileType *
+            \ if &omnifunc != '' |
+            \   call SuperTabChain(&omnifunc, "<c-p>") |
+            \ endif
+    augroup END
+    " <TAB>: completion.
+    inoremap <expr> <Up> <Plug>SuperTabForward
+    inoremap <expr> <Down> <Plug>SuperTabBackward
 endif
 
 "" Plugin: CompleteParameter.vim {{{
-inoremap <silent><expr> ( complete_parameter#pre_complete("()")
-smap <c-j> <Plug>(complete_parameter#goto_next_parameter)
-imap <c-j> <Plug>(complete_parameter#goto_next_parameter)
-smap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
-imap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
+" inoremap <silent><expr> ( complete_parameter#pre_complete("()")
+" smap <c-j> <Plug>(complete_parameter#goto_next_parameter)
+" imap <c-j> <Plug>(complete_parameter#goto_next_parameter)
+" smap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
+" imap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
 "" }}}
 
 "" Plugin: NERD Commenter {{{
