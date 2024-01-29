@@ -70,7 +70,8 @@ if !has('compatible')
     Plug 'https://github.com/scrooloose/nerdcommenter'
     " Plug 'https://github.com/tpope/vim-commentary'
     Plug 'https://github.com/tpope/vim-scriptease'
-    Plug 'https://github.com/tweekmonster/helpful.vim' " 📓 Display vim version numbers in docs
+    " Plug 'https://github.com/tweekmonster/helpful.vim'
+    Plug 'https://github.com/NeonVim/helpful.vim' " 📓 Display vim version numbers in docs
     Plug 'https://github.com/ConradIrwin/vim-bracketed-paste'
     Plug 'https://github.com/godlygeek/tabular' " Vim script for text filtering and alignment
     Plug 'https://github.com/pbrisbin/vim-restore-cursor'
@@ -145,22 +146,23 @@ if !has('compatible')
     Plug 'https://github.com/itspriddle/vim-shellcheck'
     Plug 'https://github.com/z0mbix/vim-shfmt'
     " Tab complete
+    " Completor
     if g:PYTHON && has('job') && has('timers') && has('lambda')
         Plug 'https://github.com/maralla/completor.vim'
         Plug 'https://github.com/maralla/completor-neosnippet'
-    else
-        if (v:version >= 703 && has('patch885') && has('lua')) && (v:version >= 802 && (v:version == 802 && has('patch1066')))
-            Plug 'https://github.com/Shougo/neocomplete.vim'
-            Plug 'https://github.com/Shougo/neosnippet-snippets'
-            Plug 'https://github.com/Shougo/neosnippet.vim'
-            Plug 'https://github.com/Shougo/vimshell.vim'
-            Plug 'https://github.com/Shougo/neco-vim'
-        else
-            Plug 'https://github.com/ervandew/supertab'
-        endif
     endif
-    Plug 'https://github.com/tenfyzhong/CompleteParameter.vim'
+    if (v:version >= 703 && has('patch885') && has('lua')) && (v:version >= 802 && (v:version == 802 && has('patch1066')))
+        Plug 'https://github.com/Shougo/neocomplete.vim' " Next generation completion framework after neocomplcache
+        Plug 'https://github.com/Shougo/vimshell.vim' " 🐚 Powerful shell implemented by vim
+        Plug 'https://github.com/Shougo/neco-vim' "The Vim Script completion source for neocomplete/deoplete/ddc
+        Plug 'https://github.com/tenfyzhong/CompleteParameter.vim' " Complete parameter after select the completion. Integration with YouCompleteMe(ycm), deoplete, neocomplete
+    endif
+    Plug 'https://github.com/ervandew/supertab'
     Plug 'https://github.com/Raimondi/delimitMate'
+    " Snippets
+    Plug 'https://github.com/Shougo/neosnippet.vim'
+    Plug 'https://github.com/Shougo/neosnippet-snippets'
+    Plug 'https://github.com/honza/vim-snippets'
     " Docker
     Plug 'https://github.com/wsdjeg/vim-dockerfile'
     " Groovy
@@ -211,6 +213,7 @@ if !has('compatible')
     Plug 'https://github.com/Donaldttt/fuzzyy'
     Plug 'https://github.com/luochen1990/rainbow'
     Plug 'https://github.com/MattesGroeger/vim-bookmarks'
+    let g:table_mode_map_prefix = ',t'
     Plug 'https://github.com/dhruvasagar/vim-table-mode'
     Plug 'https://github.com/tpope/vim-surround'
 
@@ -280,8 +283,8 @@ set complete+=k                                 " scan the files given with the 
 set whichwrap=b,s,<,>,[,],h,l                   " which keys move the cursor to previous/next line when the cursor is on the first/last character
 set noswapfile                                  " do not write annoying intermediate swap files
 set nobackup                                    " do not keep backup files, it's 70's style cluttering
-set nonumber
-set norelativenumber
+set number
+set relativenumber
 set nolist
 set wrap
 set endofline                                   " Add empty newlines at the end of files
@@ -418,11 +421,30 @@ inoremap <Up> <C-o>gk
 let g:pluginIsEnabledDirectory = VIMRC . '/plugged'
 "## Plugins configuration {{{
 
+"" Plugin: vim-table-mode {{{
+if plugin#isEnabled('vim-table-mode')
+    function! s:isAtStartOfLine(mapping)
+    let text_before_cursor = getline('.')[0 : col('.')-1]
+    let mapping_pattern = '\V' . escape(a:mapping, '\')
+    let comment_pattern = '\V' . escape(substitute(&l:commentstring, '%s.*$', '', ''), '\')
+    return (text_before_cursor =~? '^' . ('\v(' . comment_pattern . '\v)?') . '\s*\v' . mapping_pattern . '\v$')
+    endfunction
+
+    inoreabbrev <expr> <bar><bar>
+            \ <SID>isAtStartOfLine('\|\|') ?
+            \ '<c-o>:TableModeEnable<cr><bar><space><bar><left><left>' : '<bar><bar>'
+    inoreabbrev <expr> __
+            \ <SID>isAtStartOfLine('__') ?
+            \ '<c-o>:silent! TableModeDisable<cr>' : '__'
+endif
+"" }}}
+
 "" Plugin: rainbow
 let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
-"" Plugin: helpful {{{
+
+"" Plugin: helpful
 let b:helpful=1
-"" }}}
+
 "" Plugin: vim-signify {{{
 if plugin#isEnabled('vim-signify')
     " default updatetime 4000ms is not good for async update
@@ -492,10 +514,10 @@ if g:PYTHON && has('job') && has('timers') && has('lambda')
 
     let g:completor_complete_options = 'menuone,noselect,preview'
 
-    noremap <silent> <leader>d :call completor#do('definition')<CR>
-    noremap <silent> <leader>c :call completor#do('doc')<CR>
-    noremap <silent> <leader>f :call completor#do('format')<CR>
-    noremap <silent> <leader>s :call completor#do('hover')<CR>
+"    noremap <silent> <leader>d :call completor#do('definition')<CR>
+"    noremap <silent> <leader>c :call completor#do('doc')<CR>
+"    noremap <silent> <leader>f :call completor#do('format')<CR>
+"    noremap <silent> <leader>s :call completor#do('hover')<CR>
     "" }}}
 else
     if (v:version >= 703 && has('patch885') && has('lua')) && (v:version >= 802 && (v:version == 802 && has('patch1066')))
@@ -658,9 +680,9 @@ if plugin#isEnabled('tagbar')
         \ 'v:variables'
         \ ]
         \}
-	let g:tagbar_type_markdown = {
-        \ 'ctagstype'	: 'markdown',
-        \ 'kinds'		: [
+    let g:tagbar_type_markdown = {
+        \ 'ctagstype'    : 'markdown',
+        \ 'kinds'        : [
             \ 'c:chapter:0:1',
             \ 's:section:0:1',
             \ 'S:subsection:0:1',
@@ -668,15 +690,15 @@ if plugin#isEnabled('tagbar')
             \ 'T:l4subsection:0:1',
             \ 'u:l5subsection:0:1',
         \ ],
-        \ 'sro'			: '""',
-        \ 'kind2scope'	: {
+        \ 'sro'            : '""',
+        \ 'kind2scope'    : {
             \ 'c' : 'chapter',
             \ 's' : 'section',
             \ 'S' : 'subsection',
             \ 't' : 'subsubsection',
             \ 'T' : 'l4subsection',
         \ },
-        \ 'scope2kind'	: {
+        \ 'scope2kind'    : {
             \ 'chapter' : 'c',
             \ 'section' : 's',
             \ 'subsection' : 'S',
@@ -684,81 +706,81 @@ if plugin#isEnabled('tagbar')
             \ 'l4subsection' : 'T',
         \ },
     \ }
-	let g:tagbar_type_css = {
-		\ 'ctagstype' : 'Css',
-			\ 'kinds'     : [
-				\ 'c:classes',
-				\ 's:selectors',
-				\ 'i:identities'
-			\ ]
-		\ }
-	let g:tagbar_type_go = {
-		\ 'ctagstype': 'go',
-		\ 'kinds' : [
-			\'p:package',
-			\'f:function',
-			\'v:variables',
-			\'t:type',
-			\'c:const'
-		\]
-	\}
-	let g:tagbar_type_groovy = {
-		\ 'ctagstype' : 'groovy',
-		\ 'kinds'     : [
-			\ 'p:package:1',
-			\ 'c:classes',
-			\ 'i:interfaces',
-			\ 't:traits',
-			\ 'e:enums',
-			\ 'm:methods',
-			\ 'f:fields:1'
-		\ ]
-	\ }
-	let g:tagbar_type_json = {
-		\ 'ctagstype' : 'json',
-		\ 'kinds' : [
-		\ 'o:objects',
-		\ 'a:arrays',
-		\ 'n:numbers',
-		\ 's:strings',
-		\ 'b:booleans',
-		\ 'z:nulls'
-		\ ],
-	\ 'sro' : '.',
-		\ 'scope2kind': {
-		\ 'object': 'o',
-		\ 'array': 'a',
-		\ 'number': 'n',
-		\ 'string': 's',
-		\ 'boolean': 'b',
-		\ 'null': 'z'
-		\ },
-		\ 'kind2scope': {
-		\ 'o': 'object',
-		\ 'a': 'array',
-		\ 'n': 'number',
-		\ 's': 'string',
-		\ 'b': 'boolean',
-		\ 'z': 'null'
-		\ },
-		\ 'sort' : 0
-	\ }
-	let g:tagbar_type_perl = {
-		\ 'ctagstype' : 'perl',
-		\ 'kinds'     : [
-			\ 'p:package:0:0',
-			\ 'w:roles:0:0',
-			\ 'e:extends:0:0',
-			\ 'u:uses:0:0',
-			\ 'r:requires:0:0',
-			\ 'o:ours:0:0',
-			\ 'a:properties:0:0',
-			\ 'b:aliases:0:0',
-			\ 'h:helpers:0:0',
-			\ 's:subroutines:0:0',
-			\ 'd:POD:1:0'
-		\ ]
-	\ }
+    let g:tagbar_type_css = {
+        \ 'ctagstype' : 'Css',
+            \ 'kinds'     : [
+                \ 'c:classes',
+                \ 's:selectors',
+                \ 'i:identities'
+            \ ]
+        \ }
+    let g:tagbar_type_go = {
+        \ 'ctagstype': 'go',
+        \ 'kinds' : [
+            \'p:package',
+            \'f:function',
+            \'v:variables',
+            \'t:type',
+            \'c:const'
+        \]
+    \}
+    let g:tagbar_type_groovy = {
+        \ 'ctagstype' : 'groovy',
+        \ 'kinds'     : [
+            \ 'p:package:1',
+            \ 'c:classes',
+            \ 'i:interfaces',
+            \ 't:traits',
+            \ 'e:enums',
+            \ 'm:methods',
+            \ 'f:fields:1'
+        \ ]
+    \ }
+    let g:tagbar_type_json = {
+        \ 'ctagstype' : 'json',
+        \ 'kinds' : [
+        \ 'o:objects',
+        \ 'a:arrays',
+        \ 'n:numbers',
+        \ 's:strings',
+        \ 'b:booleans',
+        \ 'z:nulls'
+        \ ],
+    \ 'sro' : '.',
+        \ 'scope2kind': {
+        \ 'object': 'o',
+        \ 'array': 'a',
+        \ 'number': 'n',
+        \ 'string': 's',
+        \ 'boolean': 'b',
+        \ 'null': 'z'
+        \ },
+        \ 'kind2scope': {
+        \ 'o': 'object',
+        \ 'a': 'array',
+        \ 'n': 'number',
+        \ 's': 'string',
+        \ 'b': 'boolean',
+        \ 'z': 'null'
+        \ },
+        \ 'sort' : 0
+    \ }
+    let g:tagbar_type_perl = {
+        \ 'ctagstype' : 'perl',
+        \ 'kinds'     : [
+            \ 'p:package:0:0',
+            \ 'w:roles:0:0',
+            \ 'e:extends:0:0',
+            \ 'u:uses:0:0',
+            \ 'r:requires:0:0',
+            \ 'o:ours:0:0',
+            \ 'a:properties:0:0',
+            \ 'b:aliases:0:0',
+            \ 'h:helpers:0:0',
+            \ 's:subroutines:0:0',
+            \ 'd:POD:1:0'
+        \ ]
+    \ }
 endif
 "" }}}
 
