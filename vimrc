@@ -65,6 +65,7 @@ if !has('compatible')
     Plug 'https://github.com/junegunn/vim-plug'
     Plug 'https://github.com/tpope/vim-sensible' " Defaults everyone can agree on
     Plug 'https://github.com/preservim/nerdtree.git'
+    Plug 'https://github.com/PhilRunninger/nerdtree-buffer-ops' " A plugin for highlighting and closing open buffers while in the NERDTree
     Plug 'https://github.com/tiagofumo/vim-nerdtree-syntax-highlight' " Extra syntax and highlight for nerdtree files
     Plug 'https://github.com/scrooloose/nerdcommenter'
     " Plug 'https://github.com/tpope/vim-commentary'
@@ -107,6 +108,7 @@ if !has('compatible')
     if v:version >= 800 && (v:version == 800 && has('patch27') || v:version > 800)
         Plug 'https://github.com/liuchengxu/vista.vim' " 🌵 Viewer & Finder for LSP symbols and tag
     endif
+    Plug 'https://github.com/majutsushi/tagbar' " Vim plugin that displays tags in a window, ordered by scope
     Plug 'https://github.com/vim-scripts/DrawIt' " Ascii drawing plugin: lines, ellipses, arrows, fills, and more!
     Plug 'https://github.com/itchyny/calendar.vim' " A calendar application for Vim
     Plug 'https://github.com/xolox/vim-misc' " Miscellaneous auto-load Vim scripts
@@ -582,7 +584,10 @@ nnoremap <F3> :NERDTreeToggle<CR>
 "" }}}
 
 "" Plugin: vim-airline {{{
-let g:airline_powerline_fonts = 1
+if plugin#isEnabled('vim-airline')
+    let g:airline_powerline_fonts = 1
+    let g:airline_skip_empty_sections = 1
+endif
 "" }}}
 
 "" Plugin: taglist.vim {{{
@@ -607,6 +612,154 @@ let Tlist_Display_Prototype=1
 let Tlist_Display_Tag_Scope=1
 " show TagList window on the left
 let Tlist_Use_Left_Window=1
+"" }}}
+
+"" Plugin: tagbar {{{
+if plugin#isEnabled('tagbar')
+    noremap  <silent> <F12>       :TagbarToggle<CR>
+    inoremap <silent> <F12>  <C-C>:TagbarToggle<CR>
+    let g:tagbar_left             = 1
+    let g:tagbar_sort             = 0
+    let g:tagbar_show_linenumbers = 0
+    let g:tagbar_autofocus        = 1
+    "let g:tagbar_width           = 30
+    "let g:tagbar_vertical        = 30
+    let g:tagbar_compact = 1
+    let g:tagbar_type_ansible = {
+        \ 'ctagstype' : 'ansible',
+        \ 'kinds' : [
+        \ 't:tasks',
+        \ 'h:hosts'
+        \ ],
+        \ 'sort' : 0
+        \ }
+    let g:tagbar_type_terraform = {
+        \ 'ctagstype' : 'terraform',
+        \ 'kinds' : [
+        \ 'r:resources',
+        \ 'm:modules',
+        \ 'o:outputs',
+        \ 'v:variables',
+        \ 'f:tfvars'
+        \ ],
+        \ 'sort' : 0
+        \ }
+    let g:tagbar_type_make = {
+        \ 'kinds':[
+        \ 'm:macros',
+        \ 't:targets'
+        \ ]
+        \}
+    " fix your ~/.ctags https://gist.github.com/dracorp/5d7308b894c1c9f301bc9cb8d2f262db
+    let g:tagbar_type_sh = {
+        \ 'kinds':[
+        \ 'f:functions',
+        \ 'c:constants',
+        \ 'v:variables'
+        \ ]
+        \}
+	let g:tagbar_type_markdown = {
+        \ 'ctagstype'	: 'markdown',
+        \ 'kinds'		: [
+            \ 'c:chapter:0:1',
+            \ 's:section:0:1',
+            \ 'S:subsection:0:1',
+            \ 't:subsubsection:0:1',
+            \ 'T:l4subsection:0:1',
+            \ 'u:l5subsection:0:1',
+        \ ],
+        \ 'sro'			: '""',
+        \ 'kind2scope'	: {
+            \ 'c' : 'chapter',
+            \ 's' : 'section',
+            \ 'S' : 'subsection',
+            \ 't' : 'subsubsection',
+            \ 'T' : 'l4subsection',
+        \ },
+        \ 'scope2kind'	: {
+            \ 'chapter' : 'c',
+            \ 'section' : 's',
+            \ 'subsection' : 'S',
+            \ 'subsubsection' : 't',
+            \ 'l4subsection' : 'T',
+        \ },
+    \ }
+	let g:tagbar_type_css = {
+		\ 'ctagstype' : 'Css',
+			\ 'kinds'     : [
+				\ 'c:classes',
+				\ 's:selectors',
+				\ 'i:identities'
+			\ ]
+		\ }
+	let g:tagbar_type_go = {
+		\ 'ctagstype': 'go',
+		\ 'kinds' : [
+			\'p:package',
+			\'f:function',
+			\'v:variables',
+			\'t:type',
+			\'c:const'
+		\]
+	\}
+	let g:tagbar_type_groovy = {
+		\ 'ctagstype' : 'groovy',
+		\ 'kinds'     : [
+			\ 'p:package:1',
+			\ 'c:classes',
+			\ 'i:interfaces',
+			\ 't:traits',
+			\ 'e:enums',
+			\ 'm:methods',
+			\ 'f:fields:1'
+		\ ]
+	\ }
+	let g:tagbar_type_json = {
+		\ 'ctagstype' : 'json',
+		\ 'kinds' : [
+		\ 'o:objects',
+		\ 'a:arrays',
+		\ 'n:numbers',
+		\ 's:strings',
+		\ 'b:booleans',
+		\ 'z:nulls'
+		\ ],
+	\ 'sro' : '.',
+		\ 'scope2kind': {
+		\ 'object': 'o',
+		\ 'array': 'a',
+		\ 'number': 'n',
+		\ 'string': 's',
+		\ 'boolean': 'b',
+		\ 'null': 'z'
+		\ },
+		\ 'kind2scope': {
+		\ 'o': 'object',
+		\ 'a': 'array',
+		\ 'n': 'number',
+		\ 's': 'string',
+		\ 'b': 'boolean',
+		\ 'z': 'null'
+		\ },
+		\ 'sort' : 0
+	\ }
+	let g:tagbar_type_perl = {
+		\ 'ctagstype' : 'perl',
+		\ 'kinds'     : [
+			\ 'p:package:0:0',
+			\ 'w:roles:0:0',
+			\ 'e:extends:0:0',
+			\ 'u:uses:0:0',
+			\ 'r:requires:0:0',
+			\ 'o:ours:0:0',
+			\ 'a:properties:0:0',
+			\ 'b:aliases:0:0',
+			\ 'h:helpers:0:0',
+			\ 's:subroutines:0:0',
+			\ 'd:POD:1:0'
+		\ ]
+	\ }
+endif
 "" }}}
 
 "" Plugin: Vista {{{
