@@ -64,18 +64,15 @@ if !has('compatible')
     " Plugins definition
     Plug 'https://github.com/junegunn/vim-plug' " 🌺 Minimalist Vim Plugin Manager
     Plug 'https://github.com/tpope/vim-sensible' " Defaults everyone can agree on
-    Plug 'https://github.com/preservim/nerdtree.git' " A tree explorer plugin for vim
-    Plug 'https://github.com/PhilRunninger/nerdtree-buffer-ops' " A plugin for highlighting and closing open buffers while in the NERDTree
+    Plug 'https://github.com/preservim/nerdtree' " A tree explorer plugin for vim
     Plug 'https://github.com/tiagofumo/vim-nerdtree-syntax-highlight' " Extra syntax and highlight for nerdtree files
     Plug 'https://github.com/scrooloose/nerdcommenter' " Vim plugin for intensely nerdy commenting powers
     Plug 'https://github.com/tpope/vim-commentary' " comment stuff out
     Plug 'https://github.com/tpope/vim-scriptease' " A Vim plugin for Vim plugins
-    " Plug 'https://github.com/tweekmonster/helpful.vim'
     Plug 'https://github.com/NeonVim/helpful.vim' " 📓 Display vim version numbers in docs
     Plug 'https://github.com/ConradIrwin/vim-bracketed-paste' " Handles bracketed-paste-mode in vim (aka. automatic `:set paste`)
     Plug 'https://github.com/godlygeek/tabular' " Vim script for text filtering and alignment
     Plug 'https://github.com/pbrisbin/vim-restore-cursor' " Restore your cursor position when you (re)open vim
-    Plug 'https://github.com/vim-scripts/better-whitespace' " A better whitespace highlighter for Vim
     Plug 'https://github.com/andymass/vim-matchup' " even better % 👊 navigate and highlight matching words 👊 modern matchit and matchparen.
     Plug 'https://github.com/tpope/vim-speeddating' " use CTRL-A/CTRL-X to increment dates, times, and more
     Plug 'https://github.com/tpope/vim-repeat' " enable repeating supported plugin maps with .
@@ -142,36 +139,35 @@ if !has('compatible')
     Plug 'https://github.com/junegunn/goyo.vim' " 🌷 Distraction-free writing in Vim
     Plug 'https://github.com/junegunn/limelight.vim' " 🔦 All the world's indeed a stage and we are merely players
     " Checker
-    Plug 'https://github.com/scrooloose/syntastic' " Syntax checking hacks for vim
+    " Plug 'https://github.com/vim-syntastic/syntastic' " Syntax checking hacks for vim
+    Plug 'https://github.com/dense-analysis/ale' " Check syntax in Vim/Neovim asynchronously and fix files, with Language Server Protocol (LSP) support
     Plug 'https://github.com/itspriddle/vim-shellcheck' " Vim wrapper for ShellCheck, a static analysis tool for shell scripts.
     Plug 'https://github.com/z0mbix/vim-shfmt' " Vim plugin for shfmt (https://github.com/mvdan/sh)
     " Tab complete
-    " let g:tab_complete = 'coc' " only for testing
     if (( v:version >= 801 && (v:version == 801 && has('patch1719') || v:version > 801) ) || ( has('nvim') && has('nvim') >= 4000 ))
                 \ && executable('node')
-                " \ && g:tab_complete ==# 'coc'
+        let g:tab_complete = 'coc'
         Plug 'https://github.com/neoclide/coc-neco' " viml completion source for coc.nvim
         Plug 'https://github.com/neoclide/coc.nvim', {'branch': 'release'} " Nodejs extension host for vim & neovim, load extensions like VSCode and host language servers
         Plug 'https://github.com/neoclide/coc-snippets' " Snippets solution for coc.nvim
     " Completor
     elseif g:PYTHON && has('job') && has('timers') && has('lambda')
-                " \ && g:tab_complete ==# 'completor'
+        let g:tab_complete = 'completor'
         Plug 'https://github.com/maralla/completor.vim' " Async completion framework made ease
         Plug 'https://github.com/maralla/completor-neosnippet' " Neosnippet completion support for completor.vim
         Plug 'https://github.com/kyouryuukunn/completor-necosyntax' " ???
         Plug 'https://github.com/kyouryuukunn/completor-necovim' " ???
     elseif (v:version >= 703 && has('patch885') && has('lua')) && (v:version >= 802 && (v:version == 802 && has('patch1066')))
-                " \ && g:tab_complete ==# 'neocomplete'
+        let g:tab_complete = 'neocomplete'
         Plug 'https://github.com/Shougo/neocomplete.vim' " Next generation completion framework after neocomplcache
-        Plug 'https://github.com/tenfyzhong/CompleteParameter.vim' " Complete parameter after select the completion. Integration with YouCompleteMe(ycm), deoplete, neocomplete
-    " elseif g:tab_complete ==# 'deoplete'
-    "     Plug 'https://github.com/Shougo/deoplete.nvim' " 🌠 Dark powered asynchronous completion framework for neovim/Vim8
-    "     Plug 'https://github.com/roxma/nvim-yarp' " Yet Another Remote Plugin Framework for Neovim
-    "     Plug 'https://github.com/roxma/vim-hug-neovim-rpc'
-    else " g:tab_complete ==# 'supertab'
+    else
+        let g:tab_complete = 'supertab'
         Plug 'https://github.com/ervandew/supertab' " Perform all your vim insert mode completions with Tab
     endif
-    " Plug 'https://github.com/Raimondi/delimitMate' " Vim plugin, provides insert mode auto-completion for quotes, parens, brackets, etc.
+    if !empty(g:tab_complete)
+        Plug 'https://github.com/tenfyzhong/CompleteParameter.vim' " Complete parameter after select the completion. Integration with YouCompleteMe(ycm), deoplete, neocomplete
+    endif
+    Plug 'https://github.com/Raimondi/delimitMate' " Vim plugin, provides insert mode auto-completion for quotes, parens, brackets, etc.
     " Snippets
     Plug 'https://github.com/Shougo/neosnippet.vim' " neo-snippet plugin
     Plug 'https://github.com/Shougo/neosnippet-snippets' " The standard snippets repository for neosnippet
@@ -229,6 +225,10 @@ if !has('compatible')
     let g:table_mode_map_prefix = ',t'
     Plug 'https://github.com/dhruvasagar/vim-table-mode' " VIM Table Mode for instant table creation.
     Plug 'https://github.com/tpope/vim-surround' " Delete/change/add parentheses/quotes/XML-tags/much more with ease
+    Plug 'https://github.com/preservim/vim-indent-guides' " A Vim plugin for visually displaying indent levels in code
+    if has('signs')
+        Plug 'https://github.com/kshenoy/vim-signature' " Plugin to toggle, display and navigate marks
+    endif
 
     " vim-devicons should be at the end
     Plug 'https://github.com/ryanoasis/vim-devicons' " Adds file type icons to Vim plugins such as: NERDTree, vim-airline, CtrlP, unite, Denite, lightline, vim-startify and many more
@@ -288,7 +288,7 @@ set splitbelow                                  " command :sp put a new window b
 set splitright                                  " command :vs put a new windows on right side of active
 set equalalways                                 " Resize windows on split or close
 set tildeop                                     " Tylde(~) behaves like operator
-set cmdheight=2                                 " use a status bar that is 2 rows high
+set cmdheight=1                                 " use a status bar that is 2 rows high
 set wildmenu                                    " make tab completion for files/buffers act like bash
 set wildmode=list:longest,list:full             " show a list when pressing tab and complete
 set modeline
@@ -434,7 +434,47 @@ vnoremap k gk
 let g:pluginIsEnabledDirectory = VIMRC . '/plugged'
 let g:pluginIsEnabledVerbose = 0
 
-"## Plugins configuration {{{
+
+""" Plugins configuration {{{
+
+"" Plugin: ale
+if plugin#isEnabled('ale')
+    " extended logging
+    let g:ale_history_log_output = 1
+    let g:ale_history_enabled = 1
+    " virtual text appearing at ends of lines
+    let g:ale_virtualtext_cursor = 'current'
+    let g:ale_open_list = 0
+    let g:ale_echo_msg_error_str = 'E'
+    let g:ale_echo_msg_warning_str = 'W'
+    let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+    nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+    nmap <silent> <C-j> <Plug>(ale_next_wrap)
+    " Write this in your vimrc file
+    let g:ale_lint_on_text_changed = 'never'
+    let g:ale_lint_on_insert_leave = 0
+    " You can disable this option too
+    " if you don't want linters to run on opening a file
+    let g:ale_lint_on_enter = 0
+    " Set this variable to 1 to fix files when you save them.
+    let g:ale_fix_on_save = 0
+    " <C-x><C-o>
+    set omnifunc=ale#completion#OmniFunc
+endif
+
+"" Plugin: vim-indent-guides
+if plugin#isEnabled('vim-indent-guides')
+    let g:indent_guides_enable_on_vim_startup = 1
+    let g:indent_guides_start_level = 2
+    let g:indent_guides_guide_size = 1
+endif
+
+"" Plugin: gruvbox
+if plugin#isEnabled('gruvbox')
+    let g:gruvbox_italic = 1
+    let g:gruvbox_italicize_comments = 1
+    let g:gruvbox_italicize_strings = 1
+endif
 
 "" Plugin: vim-commentary {{{
 if plugin#isEnabled('vim-commentary')
@@ -465,10 +505,14 @@ endif
 "" }}}
 
 "" Plugin: rainbow
-let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
+if plugin#isEnabled('rainbow')
+    let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
+endif
 
-"" Plugin: helpful
-let b:helpful=1
+"" Plugin: helpful.vim
+if plugin#isEnabled('helpful.vim')
+    " let b:helpful=1
+endif
 
 "" Plugin: vim-signify {{{
 if plugin#isEnabled('vim-signify')
@@ -478,30 +522,36 @@ endif
 "" }}}
 
 "" Plugin: vim-shfmt {{{
+if plugin#isEnabled('vim-shfmt')
 " :Shfmt
 " gq for paragraph
 " gqip
-augroup  shfmt
-    autocmd!
-    autocmd  FileType sh let &l:formatprg='shfmt -i ' . &l:shiftwidth . ' -ln posix -sr -ci -s'
-augroup END
+    augroup  shfmt
+        autocmd!
+        autocmd  FileType sh let &l:formatprg='shfmt -i ' . &l:shiftwidth . ' -ln posix -sr -ci -s'
+    augroup END
+endif
 "" }}}
 
 "" Plugin: bash-support {{{
-if g:UNIX
-    " see ~/.config/vim/local.vim
-    let g:BASH_LocalTemplateFile    = VIMRC . '/templates/bash-support/templates/Templates'
-    if g:MACOS
-        let g:BASH_Executable       = '/usr/local/bin/bash'
-    else
-        let g:BASH_Executable       = '/usr/bin/bash'
+if plugin#isEnabled('bash-support')
+    if g:UNIX
+        " see ~/.config/vim/local.vim
+        let g:BASH_LocalTemplateFile    = VIMRC . '/templates/bash-support/templates/Templates'
+        if g:MACOS
+            let g:BASH_Executable       = '/usr/local/bin/bash'
+        else
+            let g:BASH_Executable       = '/usr/bin/bash'
+        endif
     endif
 endif
 
 "" }}}
 "" Plugin: vim-better-whitespace {{{
-let g:better_whitespace_enabled=1
-let g:strip_whitespace_on_save=1
+if plugin#isEnabled('vim-better-whitespace')
+    let g:better_whitespace_enabled=1
+    let g:strip_whitespace_on_save=1
+endif
 "" }}}
 
 "" Plugin: Completor {{{
@@ -533,7 +583,7 @@ if plugin#isEnabled('completor.vim')
     inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
     inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
     " Close popup by <Space>.
-    inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
+    inoremap <expr> <Space> pumvisible() ? "\<C-y>" : "\<Space>"
     inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<cr>"
 
     " Use tab to trigger auto completion.  Default suggests completions as you type.
@@ -543,9 +593,6 @@ if plugin#isEnabled('completor.vim')
     let g:completor_complete_options = 'menuone,noselect,preview'
 endif
 "" }}}
-if plugin#isEnabled('deoplete.vim')
-    let g:deoplete#enable_at_startup = 1
-endif
 
 if plugin#isEnabled('coc.nvim')
     let g:coc_global_extensions = [
@@ -562,17 +609,17 @@ if plugin#isEnabled('coc.nvim')
     " no select by `"suggest.noselect": true` in your configuration file
     " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
     " other plugin before putting this into your config
-    inoremap <silent><expr> <TAB>
+    inoremap <silent> <expr> <TAB>
         \ coc#pum#visible() ? coc#pum#next(1) :
         \ CheckBackspace() ? "\<Tab>" :
         \ coc#refresh()
-    inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+    inoremap <expr> <S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
     " You have to remap <cr> to make it confirm completion.
     inoremap <expr> <cr> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 
     " use <c-space> for trigger completion
-    inoremap <silent><expr> <c-space> coc#refresh()
+    inoremap <silent> <expr> <c-space> coc#refresh()
 
     function! CheckBackspace() abort
         let col = col('.') - 1
@@ -592,6 +639,12 @@ if plugin#isEnabled('coc.nvim')
 
     " Use <C-l> for trigger snippet expand.
     imap <C-l> <Plug>(coc-snippets-expand)<cr>
+
+    " coc-vimlsp
+    let g:markdown_fenced_languages = [
+      \ 'vim',
+      \ 'help'
+      \]
 endif
 
 "" Plugin: neocomplete {{{
@@ -604,8 +657,8 @@ if plugin#isEnabled('neocomplete.vim')
     let g:neocomplete#sources#syntax#min_keyword_length = 2
 
     " Plugin key-mappings.
-    inoremap <expr><C-g>     neocomplete#undo_completion()
-    inoremap <expr><C-l>     neocomplete#complete_common_string()
+    inoremap <expr> <C-g>     neocomplete#undo_completion()
+    inoremap <expr> <C-l>     neocomplete#complete_common_string()
 
     " Recommended key-mappings.
     " <CR>: close popup and save indent.
@@ -616,17 +669,17 @@ if plugin#isEnabled('neocomplete.vim')
         return pumvisible() ? "\<C-y>" : "\<CR>"
     endfunction
     " <TAB>: completion.
-    inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+    inoremap <expr> <TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
     inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
     inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
     inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
     " Close popup by <Space>.
-    inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
+    inoremap <expr> <Space> pumvisible() ? "\<C-y>" : "\<Space>"
     inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<cr>"
 
     " <C-h>, <BS>: close popup and delete backword char.
-    inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-    inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+    inoremap <expr> <C-h> neocomplete#smart_close_popup()."\<C-h>"
+    inoremap <expr> <BS> neocomplete#smart_close_popup()."\<C-h>"
 
     " AutoComplPop like behavior.
     "let g:neocomplete#enable_auto_select = 1
@@ -642,6 +695,7 @@ if plugin#isEnabled('neocomplete.vim')
     augroup END
     "" }}}
 endif
+
 "" Plugin: supertab
 if plugin#isEnabled('supertab')
     let g:SuperTabDefaultCompletionType = 'context'
@@ -655,20 +709,22 @@ if plugin#isEnabled('supertab')
             \   call SuperTabChain(&omnifunc, "<c-p>") |
             \ endif
     augroup END
-    " <TAB>: completion.
-    inoremap <expr> <Up> <Plug>SuperTabForward
-    inoremap <expr> <Down> <Plug>SuperTabBackward
+    " inoremap <expr> <Up> <Plug>SuperTabForward
+    " inoremap <expr> <Down> <Plug>SuperTabBackward
 endif
 
 "" Plugin: CompleteParameter.vim {{{
-" inoremap <silent><expr> ( complete_parameter#pre_complete("()")
-" smap <c-j> <Plug>(complete_parameter#goto_next_parameter)
-" imap <c-j> <Plug>(complete_parameter#goto_next_parameter)
-" smap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
-" imap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
+if plugin#isEnabled('CompleteParameter.vim')
+    inoremap <silent> <expr> ( complete_parameter#pre_complete("()")
+    smap <c-j> <Plug>(complete_parameter#goto_next_parameter)
+    imap <c-j> <Plug>(complete_parameter#goto_next_parameter)
+    smap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
+    imap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
+endif
 "" }}}
 
 "" Plugin: NERD Commenter {{{
+if plugin#isEnabled('nerdcommenter')
     " Create default mappings
     let g:NERDCreateDefaultMappings = 1
     " Comment the whole lines in visual mode
@@ -692,10 +748,65 @@ endif
     " let g:NERDAltDelims_java = 1
     " Enable NERDCommenterToggle to check all selected lines is commented or not
     " let g:NERDToggleCheckAllLines = 1
+endif
 "" }}}
 
 "" Plugin: NERD Tree {{{
-nnoremap <F3> :NERDTreeToggle<CR>
+if plugin#isEnabled('nerdtree')
+    " Check if NERDTree is open or active
+    function! IsNERDTreeOpen()
+        return exists('t:NERDTreeBufName') && (bufwinnr(t:NERDTreeBufName) != -1)
+    endfunction
+
+    function! CheckIfCurrentBufferIsFile()
+        return strlen(expand('%')) > 0
+    endfunction
+
+    " Call NERDTreeFind if NERDTree is active, current window contains a modifiable
+    " file, and we're not in vimdiff
+    function! SyncTree() abort
+        if &modifiable && IsNERDTreeOpen() && CheckIfCurrentBufferIsFile() && !&diff
+            NERDTreeFind
+            wincmd p
+        endif
+    endfunction
+
+    function! ToggleTree()
+        if CheckIfCurrentBufferIsFile()
+            if IsNERDTreeOpen()
+                NERDTreeClose
+            else
+                NERDTreeFind
+                wincmd p
+            endif
+        else
+            NERDTree
+        endif
+    endfunction
+
+    " open NERDTree with F3
+    nnoremap <silent> <F3> :call ToggleTree()<CR>
+    nnoremap <silent> <S-F3> :call SyncTree()<CR>
+    " nnoremap <F3> :NERDTreeToggle<CR>
+
+    augroup nerdtree
+        autocmd!
+        " Start NERDTree. If a file is specified, move the cursor to its window.
+        autocmd StdinReadPre * let s:std_in=1
+        " autocmd VimEnter * NERDTree | if argc() > 0 || exists("s:std_in") | wincmd p | endif
+        " Close the tab if NERDTree is the only window remaining in it.
+        autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+        " If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
+        autocmd BufEnter * if winnr() == winnr('h') && bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
+            \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
+        " Open the existing NERDTree on each new tab.
+        autocmd BufWinEnter * if &buftype != 'quickfix' && getcmdwintype() == '' | silent NERDTreeMirror | endif
+
+        " Highlight currently open buffer in NERDTree
+        autocmd VimEnter,BufEnter,BufRead * call SyncTree()
+    augroup END
+
+endif
 "" }}}
 
 "" Plugin: vim-airline {{{
@@ -706,27 +817,29 @@ endif
 "" }}}
 
 "" Plugin: taglist.vim {{{
-noremap <silent> <S-F11> :TlistToggle<CR>
-inoremap <silent> <S-F11> <C-C>:TlistToggle<CR>
-let tlist_perl_settings = 'perl;c:constants;f:formats;l:labels;p:packages;s:subroutines;d:subroutines;o:POD;k:comments'
-let tlist_sh_settings   = 'sh;f:functions;v:variables;c:constants'
-let Tlist_Enable_Fold_Column=0
-let Tlist_Exit_OnlyWindow=1             " quit when TagList is the last open window
-let Tlist_GainFocus_On_ToggleOpen=1     " put focus on the TagList window when it opens
-" let Tlist_Process_File_Always=1       " process files in the background, even when the TagList window isn't open
-" let Tlist_Show_One_File=1             " only show tags from the current buffer, not all open buffers
-let Tlist_WinWidth=40                   " set the width
-let Tlist_Inc_Winwidth=1                " increase window by 1 when growing
-" shorten the time it takes to highlight the current tag (default is 4 secs)
-" note that this setting influences Vim's behaviour when saving swap files,
-" but we have already turned off swap files (earlier)
-" set updatetime=1000
-" show function/method prototypes in the list
-let Tlist_Display_Prototype=1
-" don't show scope info
-let Tlist_Display_Tag_Scope=1
-" show TagList window on the left
-let Tlist_Use_Left_Window=1
+if plugin#isEnabled('taglist.vim')
+    noremap <silent> <S-F11> :TlistToggle<CR>
+    inoremap <silent> <S-F11> <C-C>:TlistToggle<CR>
+    let tlist_perl_settings = 'perl;c:constants;f:formats;l:labels;p:packages;s:subroutines;d:subroutines;o:POD;k:comments'
+    let tlist_sh_settings   = 'sh;f:functions;v:variables;c:constants'
+    let Tlist_Enable_Fold_Column=0
+    let Tlist_Exit_OnlyWindow=1             " quit when TagList is the last open window
+    let Tlist_GainFocus_On_ToggleOpen=1     " put focus on the TagList window when it opens
+    " let Tlist_Process_File_Always=1       " process files in the background, even when the TagList window isn't open
+    " let Tlist_Show_One_File=1             " only show tags from the current buffer, not all open buffers
+    let Tlist_WinWidth=40                   " set the width
+    let Tlist_Inc_Winwidth=1                " increase window by 1 when growing
+    " shorten the time it takes to highlight the current tag (default is 4 secs)
+    " note that this setting influences Vim's behaviour when saving swap files,
+    " but we have already turned off swap files (earlier)
+    " set updatetime=1000
+    " show function/method prototypes in the list
+    let Tlist_Display_Prototype=1
+    " don't show scope info
+    let Tlist_Display_Tag_Scope=1
+    " show TagList window on the left
+    let Tlist_Use_Left_Window=1
+endif
 "" }}}
 
 "" Plugin: tagbar {{{
@@ -878,17 +991,19 @@ endif
 "" }}}
 
 "" Plugin: Vista {{{
-if v:version >= 800 && (v:version == 800 && has('patch27') || v:version > 800)
+if plugin#isEnabled('vista.vim')
     noremap  <silent> <S-F12>       :Vista!!<CR>
     inoremap <silent> <S-F12>  <C-C>:Vista!!<CR>
 endif
 "" }}}
 
 "" Plugin: vint-syntastic {{{
-let g:syntastic_vim_checkers = ['vint']
+if plugin#isEnabled('syntastic')
+    let g:syntastic_vim_checkers = ['vint']
+endif
 "" }}}
 
-" }}}
+""" }}}
 
 "## Functions {{{
 
@@ -1198,4 +1313,3 @@ nnoremap <silent> <F9> :call HexEditToggle()<CR>
         source ~/.config/vim/local.vim
     endif
 "" }}}
-
