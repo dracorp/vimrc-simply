@@ -146,34 +146,30 @@ if !has('compatible')
     Plug 'https://github.com/itspriddle/vim-shellcheck' " Vim wrapper for ShellCheck, a static analysis tool for shell scripts.
     Plug 'https://github.com/z0mbix/vim-shfmt' " Vim plugin for shfmt (https://github.com/mvdan/sh)
     " Tab complete
-    let g:tab_complete = 'coc'
-    " Completor
-    if g:tab_complete ==# 'completor'
-                \ && g:PYTHON && has('job') && has('timers') && has('lambda')
-        Plug 'https://github.com/maralla/completor.vim' " Async completion framework made ease
-        Plug 'https://github.com/maralla/completor-neosnippet' " Neosnippet completion support for completor.vim
-        Plug 'https://github.com/kyouryuukunn/completor-necosyntax' "
-        Plug 'https://github.com/kyouryuukunn/completor-necovim'
-    endif
-    if g:tab_complete ==# 'neocomplete'
-                \ && (v:version >= 703 && has('patch885') && has('lua')) && (v:version >= 802 && (v:version == 802 && has('patch1066')))
-        Plug 'https://github.com/Shougo/neocomplete.vim' " Next generation completion framework after neocomplcache
-        Plug 'https://github.com/tenfyzhong/CompleteParameter.vim' " Complete parameter after select the completion. Integration with YouCompleteMe(ycm), deoplete, neocomplete
-    endif
-    if g:tab_complete ==# 'supertab'
-        Plug 'https://github.com/ervandew/supertab' " Perform all your vim insert mode completions with Tab
-    endif
-    if g:tab_complete ==# 'deoplete'
-        Plug 'https://github.com/Shougo/deoplete.nvim' " 🌠 Dark powered asynchronous completion framework for neovim/Vim8
-        Plug 'https://github.com/roxma/nvim-yarp' " Yet Another Remote Plugin Framework for Neovim
-        Plug 'https://github.com/roxma/vim-hug-neovim-rpc'
-    endif
-    if g:tab_complete ==# 'coc'
-                \ && (( v:version >= 801 && (v:version == 801 && has('patch1719') || v:version > 801) ) || ( has('nvim') && has('nvim') >= 4000 ))
+    " let g:tab_complete = 'coc' " only for testing
+    if (( v:version >= 801 && (v:version == 801 && has('patch1719') || v:version > 801) ) || ( has('nvim') && has('nvim') >= 4000 ))
                 \ && executable('node')
+                " \ && g:tab_complete ==# 'coc'
         Plug 'https://github.com/neoclide/coc-neco' " viml completion source for coc.nvim
         Plug 'https://github.com/neoclide/coc.nvim', {'branch': 'release'} " Nodejs extension host for vim & neovim, load extensions like VSCode and host language servers
         Plug 'https://github.com/neoclide/coc-snippets' " Snippets solution for coc.nvim
+    " Completor
+    elseif g:PYTHON && has('job') && has('timers') && has('lambda')
+                " \ && g:tab_complete ==# 'completor'
+        Plug 'https://github.com/maralla/completor.vim' " Async completion framework made ease
+        Plug 'https://github.com/maralla/completor-neosnippet' " Neosnippet completion support for completor.vim
+        Plug 'https://github.com/kyouryuukunn/completor-necosyntax' " ???
+        Plug 'https://github.com/kyouryuukunn/completor-necovim' " ???
+    elseif (v:version >= 703 && has('patch885') && has('lua')) && (v:version >= 802 && (v:version == 802 && has('patch1066')))
+                " \ && g:tab_complete ==# 'neocomplete'
+        Plug 'https://github.com/Shougo/neocomplete.vim' " Next generation completion framework after neocomplcache
+        Plug 'https://github.com/tenfyzhong/CompleteParameter.vim' " Complete parameter after select the completion. Integration with YouCompleteMe(ycm), deoplete, neocomplete
+    " elseif g:tab_complete ==# 'deoplete'
+    "     Plug 'https://github.com/Shougo/deoplete.nvim' " 🌠 Dark powered asynchronous completion framework for neovim/Vim8
+    "     Plug 'https://github.com/roxma/nvim-yarp' " Yet Another Remote Plugin Framework for Neovim
+    "     Plug 'https://github.com/roxma/vim-hug-neovim-rpc'
+    else " g:tab_complete ==# 'supertab'
+        Plug 'https://github.com/ervandew/supertab' " Perform all your vim insert mode completions with Tab
     endif
     " Plug 'https://github.com/Raimondi/delimitMate' " Vim plugin, provides insert mode auto-completion for quotes, parens, brackets, etc.
     " Snippets
@@ -543,6 +539,8 @@ if plugin#isEnabled('completor.vim')
     " Use tab to trigger auto completion.  Default suggests completions as you type.
     let g:completor_auto_trigger = 0
     inoremap <expr> <Tab> Tab_Or_Complete()
+
+    let g:completor_complete_options = 'menuone,noselect,preview'
 endif
 "" }}}
 if plugin#isEnabled('deoplete.vim')
