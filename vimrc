@@ -200,7 +200,7 @@ if !has('compatible')
     Plug 'https://github.com/sukima/xmledit' " A filetype plugin for VIM to help edit XML files
     " Git
     if executable('git')
-        Plug 'https://github.com/tpope/vim-fugitive'        " A Git wrapper so awesome, it should be illegal
+        " Plug 'https://github.com/tpope/vim-fugitive'        " A Git wrapper so awesome, it should be illegal
         Plug 'https://github.com/rhysd/committia.vim'       " A Vim plugin for more pleasant editing on commit messages
         if has('nvim') || has('patch-8.0.902')
             Plug 'https://github.com/mhinz/vim-signify' " ➕ Show a diff using Vim its sign column.
@@ -437,6 +437,10 @@ let g:pluginIsEnabledVerbose = 0
 
 """ Plugins configuration {{{
 
+"" Plugin: committia.vim
+if plugin#isEnabled('committia.vim')
+    " let g:committia_min_window_width = 30
+endif
 "" Plugin: ale
 if plugin#isEnabled('ale')
     " extended logging
@@ -803,7 +807,7 @@ if plugin#isEnabled('nerdtree')
         autocmd BufWinEnter * if &buftype != 'quickfix' && getcmdwintype() == '' | silent NERDTreeMirror | endif
 
         " Highlight currently open buffer in NERDTree
-        autocmd VimEnter,BufEnter,BufRead * call SyncTree()
+        " autocmd VimEnter,BufEnter,BufRead * call SyncTree()
     augroup END
 
 endif
