@@ -56,7 +56,13 @@ if empty(glob(g:vim_plug_path))
     augroup END
 endif
 
-" autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)')) | PlugInstall --sync | source $MYVIMRC | endif
+" Run PlugInstall if there are missing plugins
+augroup plug_install
+    autocmd!
+    autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+                \| PlugInstall --sync | wincmd p | quit! | source $MYVIMRC
+                \| endif
+augroup END
 
 call plug#begin()
 " Plugins definition
@@ -69,7 +75,7 @@ Plug 'https://github.com/jistr/vim-nerdtree-tabs' " NERDTree and tabs together i
 Plug 'https://github.com/tpope/vim-commentary' " comment stuff out
 Plug 'https://github.com/tpope/vim-scriptease' " A Vim plugin for Vim plugins
 Plug 'https://github.com/NeonVim/helpful.vim' " 📓 Display vim version numbers in docs
-Plug 'https://github.com/ConradIrwin/vim-bracketed-paste' " Handles bracketed-paste-mode in vim (aka. automatic `:set paste`)
+" Plug 'https://github.com/ConradIrwin/vim-bracketed-paste' " Handles bracketed-paste-mode in vim (aka. automatic `:set paste`)
 Plug 'https://github.com/godlygeek/tabular' " Vim script for text filtering and alignment
 Plug 'https://github.com/pbrisbin/vim-restore-cursor' " Restore your cursor position when you (re)open vim
 Plug 'https://github.com/andymass/vim-matchup' " even better % 👊 navigate and highlight matching words 👊 modern matchit and matchparen.
@@ -137,8 +143,11 @@ Plug 'https://github.com/morhetz/gruvbox' " Retro groove color scheme for Vim
 Plug 'https://github.com/junegunn/goyo.vim' " 🌷 Distraction-free writing in Vim
 Plug 'https://github.com/junegunn/limelight.vim' " 🔦 All the world's indeed a stage and we are merely players
 " Checker
-" Plug 'https://github.com/vim-syntastic/syntastic' " Syntax checking hacks for vim
-Plug 'https://github.com/dense-analysis/ale' " Check syntax in Vim/Neovim asynchronously and fix files, with Language Server Protocol (LSP) support
+if (v:version >= 800 && has('timers'))
+    Plug 'https://github.com/dense-analysis/ale' " Check syntax in Vim/Neovim asynchronously and fix files, with Language Server Protocol (LSP) support
+else
+    Plug 'https://github.com/vim-syntastic/syntastic' " Syntax checking hacks for vim
+endif
 Plug 'https://github.com/itspriddle/vim-shellcheck' " Vim wrapper for ShellCheck, a static analysis tool for shell scripts.
 Plug 'https://github.com/z0mbix/vim-shfmt' " Vim plugin for shfmt (https://github.com/mvdan/sh)
 " Tab complete
@@ -200,11 +209,11 @@ Plug 'https://github.com/sukima/xmledit' " A filetype plugin for VIM to help edi
 if executable('git')
     " Plug 'https://github.com/tpope/vim-fugitive'        " A Git wrapper so awesome, it should be illegal
     Plug 'https://github.com/rhysd/committia.vim'       " A Vim plugin for more pleasant editing on commit messages
-    if has('nvim') || has('patch-8.0.902')
-        Plug 'https://github.com/mhinz/vim-signify' " ➕ Show a diff using Vim its sign column.
-    else
-        Plug 'https://github.com/mhinz/vim-signify', { 'tag': 'legacy' }
-    endif
+    " if has('nvim') || has('patch-8.0.902')
+    "     Plug 'https://github.com/mhinz/vim-signify' " ➕ Show a diff using Vim its sign column.
+    " else
+    "     Plug 'https://github.com/mhinz/vim-signify', { 'tag': 'legacy' }
+    " endif
 endif
 if v:version >= 740
     " Plug 'https://github.com/WolfgangMehner/git-support' " Inspect the state of a repository and execute Git commands without leaving Vim.
@@ -289,7 +298,7 @@ set splitbelow                                  " command :sp put a new window b
 set splitright                                  " command :vs put a new windows on right side of active
 set equalalways                                 " Resize windows on split or close
 set tildeop                                     " Tylde(~) behaves like operator
-set cmdheight=1                                 " use a status bar that is 2 rows high
+set cmdheight=2                                 " use a status bar that is 2 rows high
 set wildmenu                                    " make tab completion for files/buffers act like bash
 set wildmode=list:longest,list:full             " show a list when pressing tab and complete
 set modeline
@@ -303,6 +312,7 @@ set nolist
 set wrap
 set endofline                                   " Add empty newlines at the end of files
 set browsedir=current " which directory to use for the file browser
+set clipboard=unnamed
 augroup change_dir "{{{
     autocmd!
     autocmd BufEnter * :lchdir %:p:h                 " The current directory is the directory of the file in the current window.
@@ -611,6 +621,7 @@ if plugin#isEnabled('completor.vim')
 endif
 "" }}}
 
+"" Plugin: coc.nvim {{{
 if plugin#isEnabled('coc.nvim')
     let g:coc_global_extensions = [
                 \ 'coc-omni',
@@ -619,7 +630,9 @@ if plugin#isEnabled('coc.nvim')
                 \ 'coc-json',
                 \ 'coc-sh',
                 \ 'coc-vimlsp',
-                \ 'coc-yaml'
+                \ 'coc-yaml',
+                \ 'coc-highlight',
+                \ 'coc-git'
                 \]
     " Use tab for trigger completion with characters ahead and navigate
     " NOTE: There's always complete item selected by default, you may want to enable
@@ -635,24 +648,51 @@ if plugin#isEnabled('coc.nvim')
     " You have to remap <cr> to make it confirm completion.
     inoremap <expr> <cr> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 
-    " use <c-space> for trigger completion
-    inoremap <silent> <expr> <c-space> coc#refresh()
-
     function! CheckBackspace() abort
         let col = col('.') - 1
         return !col || getline('.')[col - 1]  =~# '\s'
     endfunction
 
+    " use <c-space> for trigger completion
+    if has('nvim')
+        inoremap <silent> <expr> <c-space> coc#refresh()
+    else
+        inoremap <silent> <expr> <c-@> coc#refresh()
+    endif
+
+    " GoTo code navigation
+    nmap <silent> gd <Plug>(coc-definition)
+    nmap <silent> gy <Plug>(coc-type-definition)
+    nmap <silent> gi <Plug>(coc-implementation)
+    nmap <silent> gr <Plug>(coc-references)
     " Use K to show documentation in preview window
     nnoremap <silent> K :call ShowDocumentation()<CR>
 
     function! ShowDocumentation()
-    if CocAction('hasProvider', 'hover')
-        call CocActionAsync('doHover')
-    else
-        call feedkeys('K', 'in')
-    endif
+        if CocAction('hasProvider', 'hover')
+            call CocActionAsync('doHover')
+        else
+            call feedkeys('K', 'in')
+        endif
     endfunction
+
+    " Highlight the symbol and its references when holding the cursor
+    autocmd CursorHold * silent call CocActionAsync('highlight')
+
+    " Symbol renaming
+    nmap <leader>rn <Plug>(coc-rename)
+
+    " Formatting selected code
+    xmap <leader>f  <Plug>(coc-format-selected)
+    nmap <leader>f  <Plug>(coc-format-selected)
+
+    " Remap keys for applying refactor code actions
+    nmap <silent> <leader>re <Plug>(coc-codeaction-refactor)
+    xmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
+    nmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
+
+    " Run the Code Lens action on the current line
+    nmap <leader>cl  <Plug>(coc-codelens-action)
 
     " Use <C-l> for trigger snippet expand.
     imap <C-l> <Plug>(coc-snippets-expand)<cr>
@@ -662,7 +702,26 @@ if plugin#isEnabled('coc.nvim')
       \ 'vim',
       \ 'help'
       \]
-endif
+
+    " Remap <C-f> and <C-b> to scroll float windows/popups
+    if has('nvim-0.4.0') || has('patch-8.2.0750')
+        nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+        nnoremap <silent><nowait><expr> <S-Down> coc#float#has_scroll() ? coc#float#scroll(1) : "\<S-Down>"
+        nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+        nnoremap <silent><nowait><expr> <S-Up> coc#float#has_scroll() ? coc#float#scroll(0) : "\<S-Up>"
+
+        inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+        inoremap <silent><nowait><expr> <S-Down> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+        inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+        inoremap <silent><nowait><expr> <S-Up> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+
+        vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+        vnoremap <silent><nowait><expr> <S-Down> coc#float#has_scroll() ? coc#float#scroll(1) : "\<S-Down>"
+        vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+        vnoremap <silent><nowait><expr> <S-Up> coc#float#has_scroll() ? coc#float#scroll(0) : "\<S-Up>"
+        endif
+    endif
+"" }}}
 
 "" Plugin: neocomplete {{{
 if plugin#isEnabled('neocomplete.vim')
@@ -780,7 +839,7 @@ endif
 "" Plugin: vim-nerdtree-tabs {{{
 if plugin#isEnabled('vim-nerdtree-tabs')
     map <F3> <plug>NERDTreeTabsToggle<CR>
-    let g:nerdtree_tabs_open_on_console_startup = 1
+    let g:nerdtree_tabs_open_on_console_startup = 2
     let g:nerdtree_tabs_focus_on_files = 1
     let g:nerdtree_tabs_autofind = 1
     let g:nerdtree_tabs_focus_on_files = 1
