@@ -207,7 +207,7 @@ Plug 'https://github.com/valloric/MatchTagAlways' " A Vim plugin that always hig
 Plug 'https://github.com/sukima/xmledit' " A filetype plugin for VIM to help edit XML files
 " Git
 if executable('git')
-    " Plug 'https://github.com/tpope/vim-fugitive'        " A Git wrapper so awesome, it should be illegal
+    Plug 'https://github.com/tpope/vim-fugitive'        " A Git wrapper so awesome, it should be illegal
     Plug 'https://github.com/rhysd/committia.vim'       " A Vim plugin for more pleasant editing on commit messages
     " if has('nvim') || has('patch-8.0.902')
     "     Plug 'https://github.com/mhinz/vim-signify' " ➕ Show a diff using Vim its sign column.
