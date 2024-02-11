@@ -29,7 +29,6 @@ if has('multi_byte')
     let g:UNICODE = 0
     if $LC_ALL =~? '\vutf-?8' || $LANG =~? '\vutf-?8'
         let g:UNICODE = 1
-        set fileencoding=utf-8
     endif
     if &termencoding ==# ''
         let &termencoding = &encoding
@@ -140,7 +139,7 @@ Plug 'https://github.com/vim-perl/vim-perl' " Support for Perl 5 in Vim
 Plug 'https://github.com/vim-airline/vim-airline' " lean & mean status/tabline for vim that's light as air
 Plug 'https://github.com/vim-airline/vim-airline-themes' " A collection of themes for vim-airline
 Plug 'https://github.com/morhetz/gruvbox' " Retro groove color scheme for Vim
-Plug 'https://github.com/junegunn/goyo.vim' " 🌷 Distraction-free writing in Vim
+Plug 'https://github.com/sainnhe/gruvbox-material' " Gruvbox with Material Palette
 Plug 'https://github.com/junegunn/limelight.vim' " 🔦 All the world's indeed a stage and we are merely players
 " Checker
 if (v:version >= 800 && has('timers'))
@@ -246,8 +245,18 @@ Plug 'https://github.com/ryanoasis/vim-devicons' " Adds file type icons to Vim p
 call plug#end()
 delc PlugUpgrade
 
-    " Vim configuration
-silent! colorscheme gruvbox
+" Vim configuration
+if has("syntax")
+    try
+        if index(getcompletion('', 'color'), 'gruvbox-material') >= 0
+            colorscheme gruvbox-material
+        elseif index(getcompletion('', 'color'), 'gruvbox') >= 0
+            colorscheme gruvbox
+        endif
+    catch /^Vim\%((\a\+)\)\=:E185/
+        colorscheme desert
+    endtry
+endif
 set background=dark
 
 if has('persistent_undo')
@@ -342,7 +351,6 @@ if has('folding')
         if empty(getline(a:lnum))
             return '='
         endif
-
         " Domyślnie stosuj foldexpr oparty na wcięciach
         return indent(a:lnum) / shiftwidth(a:lnum)
     endfunction
@@ -460,10 +468,26 @@ let g:pluginIsEnabledVerbose = 0
 
 """ Plugins configuration {{{
 
+"" Plugin: limelight.vim {{{
+if plugin#isEnabled('limelight.vim')
+    " Color name (:help cterm-colors) or ANSI code
+    " let g:limelight_conceal_ctermfg = 'gray'
+    " let g:limelight_conceal_ctermfg = 240
+    " Color name (:help gui-colors) or RGB color
+    " let g:limelight_conceal_guifg = 'DarkGray'
+    " let g:limelight_conceal_guifg = '#777777'
+    " Default: 0.5
+    " let g:limelight_default_coefficient = 0.7
+    " Number of preceding/following paragraphs to include (default: 0)
+    " let g:limelight_paragraph_span = 1
+endif
+"" }}}
+
 "" Plugin: committia.vim
 if plugin#isEnabled('committia.vim')
     " let g:committia_min_window_width = 30
 endif
+
 "" Plugin: ale
 if plugin#isEnabled('ale')
     " extended logging
@@ -502,6 +526,20 @@ if plugin#isEnabled('gruvbox')
     let g:gruvbox_italicize_comments = 1
     let g:gruvbox_italicize_strings = 1
 endif
+
+"" Plugin: gruvbox-material {{{
+if plugin#isEnabled('gruvbox-material')
+    " Available values: 'hard', 'medium'(default), 'soft'
+    " let g:gruvbox_material_background = 'soft'
+    " For better performance
+    let g:gruvbox_material_better_performance = 1
+    " let g:airline_theme = 'gruvbox_material'
+    " Available values: 'material'(default), 'mix', 'original'
+    " let g:gruvbox_material_foreground = 'material'
+    let g:gruvbox_material_enable_bold = 1
+    let g:gruvbox_material_enable_italic = 1
+endif
+"" }}}
 
 "" Plugin: vim-commentary {{{
 if plugin#isEnabled('vim-commentary')
