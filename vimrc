@@ -206,6 +206,7 @@ Plug 'https://github.com/valloric/MatchTagAlways' " A Vim plugin that always hig
 Plug 'https://github.com/sukima/xmledit' " A filetype plugin for VIM to help edit XML files
 " Git
 if executable('git')
+    Plug 'https://github.com/whiteinge/diffconflicts' " A better Vimdiff Git mergetool
     Plug 'https://github.com/tpope/vim-fugitive'        " A Git wrapper so awesome, it should be illegal
     Plug 'https://github.com/rhysd/committia.vim'       " A Vim plugin for more pleasant editing on commit messages
     " if has('nvim') || has('patch-8.0.902')
@@ -411,8 +412,8 @@ nnoremap <Esc><Esc> :<C-u>nohlsearch<CR>
 nnoremap <Leader>H :set hlsearch!<CR>
 
 " Quote words under cursor
-nnoremap <leader>" viW<esc>a"<esc>gvo<esc>i"<esc>gvo<esc>3l
-nnoremap <leader>' viW<esc>a'<esc>gvo<esc>i'<esc>gvo<esc>3l
+nnoremap <leader>" viW<esc>i"<esc>gvo<esc>i"<esc>gvo<esc>3l
+nnoremap <leader>' viW<esc>i'<esc>gvo<esc>i'<esc>gvo<esc>3l
 
 " refresh syntax highlight
 noremap <silent> <F10> <Esc>:syntax sync fromstart<CR>
@@ -467,6 +468,38 @@ let g:pluginIsEnabledVerbose = 0
 
 
 """ Plugins configuration {{{
+
+" Plugin: vimwiki {{{
+if plugin#isEnabled('vimwiki')
+    if g:MACOS
+        let g:vimwiki_list = [
+                    \ {'path': '~/Documents/vimwiki', 'ext': '.wiki'},
+                    \ {'path': '~/Projects/Projects-other/shellcheck.wiki/', 'syntax': 'markdown', 'ext': '.md'},
+                    \ {'path': '~/Projects/Projects-other/awesome-macos-command-line/', 'syntax': 'markdown', 'ext': '.md'},
+                    \ {'path': '~/Projects/Projects-other/markdown-here.wiki', 'syntax': 'markdown', 'ext': '.md'}
+                    \]
+    endif
+    let g:vimwiki_global_ext=0
+    nmap <Leader>wf <Plug>VimwikiFollowLink
+    nmap <Leader>we <Plug>VimwikiSplitLink
+    nmap <Leader>vs :vs \| :VimwikiIndex<CR>
+    nnoremap <silent> <leader>uu :call vimwiki#base#linkify()<cr>
+    nmap <Leader>wq <Plug>VimwikiVSplitLink
+
+    function! VimwikiFindIncompleteTasks()
+        lvimgrep /- \[ \]/ %:p
+        lopen
+    endfunction
+
+    function! VimwikiFindAllIncompleteTasks()
+        VimwikiSearch /- \[ \]/
+        lopen
+    endfunction
+
+    nmap <Leader>wx :call VimwikiFindIncompleteTasks()<CR>
+    nmap <Leader>wa :call VimwikiFindAllIncompleteTasks()<CR>
+endif
+"" }}}
 
 "" Plugin: limelight.vim {{{
 if plugin#isEnabled('limelight.vim')
@@ -612,10 +645,12 @@ if plugin#isEnabled('bash-support')
 endif
 
 "" }}}
+
 "" Plugin: vim-better-whitespace {{{
 if plugin#isEnabled('vim-better-whitespace')
     let g:better_whitespace_enabled=1
     let g:strip_whitespace_on_save=1
+    let g:strip_whitespace_confirm=0
 endif
 "" }}}
 
@@ -856,6 +891,7 @@ if plugin#isEnabled('nerdcommenter')
         let g:NERDCustomDelimiters = {}
     endif
     let g:NERDCustomDelimiters.brew = { 'left': '#', 'leftAlt': '#', 'right': '' }
+    let g:NERDCustomDelimiters.gitconfig = { 'left': '#'}
     " Align line-wise comment delimiters flush left instead of following code indentation
     let g:NERDDefaultAlign = 'left'
     " Set a language to use its alternate delimiters by default
