@@ -247,12 +247,12 @@ call plug#end()
 delc PlugUpgrade
 
 " Vim configuration
-if has("syntax")
+if has('syntax')
     try
-        if index(getcompletion('', 'color'), 'gruvbox-material') >= 0
-            colorscheme gruvbox-material
-        elseif index(getcompletion('', 'color'), 'gruvbox') >= 0
+        if has#colorscheme('gruvbox')
             colorscheme gruvbox
+        elseif has#colorscheme('gruvbox-material')
+            colorscheme gruvbox-material
         endif
     catch /^Vim\%((\a\+)\)\=:E185/
         colorscheme desert
