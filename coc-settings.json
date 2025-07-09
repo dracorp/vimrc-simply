@@ -1,3 +1,4 @@
 {
-    "coc.preferences.messageLevel": "error"
+    "coc.preferences.messageLevel": "error",
+    "snippets.ultisnips.pythonPrompt": false
 }
