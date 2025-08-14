@@ -71,11 +71,12 @@ if !&compatible
     Plug 'https://github.com/tpope/vim-sensible' " Defaults everyone can agree on
     Plug 'https://github.com/preservim/nerdtree' " A tree explorer plugin for vim
     Plug 'https://github.com/tiagofumo/vim-nerdtree-syntax-highlight' " Extra syntax and highlight for nerdtree files
-    Plug 'https://github.com/scrooloose/nerdcommenter' " Vim plugin for intensely nerdy commenting powers
+    Plug 'https://github.com/preservim/nerdcommenter' " Vim plugin for intensely nerdy commenting powers
     Plug 'https://github.com/jistr/vim-nerdtree-tabs' " NERDTree and tabs together in Vim, painlessly
     Plug 'https://github.com/tpope/vim-commentary' " comment stuff out
     Plug 'https://github.com/tpope/vim-scriptease' " A Vim plugin for Vim plugins
     Plug 'https://github.com/NeonVim/helpful.vim' " 📓 Display vim version numbers in docs
+    Plug 'https://github.com/vim-scripts/SyntaxAttr.vim' " Show syntax highlighting attributes of character under cursor.
     Plug 'https://github.com/ConradIrwin/vim-bracketed-paste' " Handles bracketed-paste-mode in vim (aka. automatic `:set paste`)
     Plug 'https://github.com/godlygeek/tabular' " Vim script for text filtering and alignment
     Plug 'https://github.com/pbrisbin/vim-restore-cursor' " Restore your cursor position when you (re)open vim
@@ -91,6 +92,7 @@ if !&compatible
         Plug 'https://github.com/vimwiki/vimwiki' " Personal Wiki for Vim
     endif
     Plug 'https://github.com/mzlogin/vim-markdown-toc' " A vim 7.4+ plugin to generate table of contents for Markdown files
+    Plug 'https://github.com/preservim/vim-markdown' " Markdown Vim Mode
     Plug 'https://github.com/ntpeters/vim-better-whitespace' " Better whitespace highlighting for Vim
     if v:version >= 740
         Plug 'https://github.com/WolfgangMehner/bash-support' " BASH IDE -- Write and run BASH-scripts using menus and hotkeys
@@ -99,7 +101,6 @@ if !&compatible
     " Plug 'https://github.com/WolfgangMehner/c-support' " Edit C/C++ programs in Vim/gVim. Insert code snippets, compile the code, run Make/CMake/... and look up help.
     Plug 'https://github.com/WolfgangMehner/perl-support' " Edit Perl scripts in Vim/gVim. Insert code snippets, run, check, and profile the code and look up help.
     Plug 'https://github.com/vim-scripts/betterga' " Yet another :ascii command
-    Plug 'https://github.com/tpope/vim-abolish' " abolish.vim: Work with several variants of a word at once
     Plug 'https://github.com/Shougo/echodoc.vim' " Print documents in echo area.
     " Plug 'https://github.com/Shougo/vimshell.vim' " 🐚 Powerful shell implemented by vim.
     " Plug 'https://github.com/Shougo/deol.nvim' " Dark powered shell interface for NeoVim/Vim8
@@ -113,7 +114,7 @@ if !&compatible
     if v:version >= 800 && (v:version == 800 && has('patch27') || v:version > 800)
         Plug 'https://github.com/liuchengxu/vista.vim' " 🌵 Viewer & Finder for LSP symbols and tag
     endif
-    Plug 'https://github.com/majutsushi/tagbar' " Vim plugin that displays tags in a window, ordered by scope
+    Plug 'https://github.com/preservim/tagbar' " Vim plugin that displays tags in a window, ordered by scope
     Plug 'https://github.com/vim-scripts/DrawIt' " Ascii drawing plugin: lines, ellipses, arrows, fills, and more!
     Plug 'https://github.com/itchyny/calendar.vim' " A calendar application for Vim
     Plug 'https://github.com/xolox/vim-misc' " Miscellaneous auto-load Vim scripts
@@ -130,9 +131,9 @@ if !&compatible
     Plug 'https://github.com/osyo-manga/vim-over' " :substitute preview
     " Plug 'https://github.com/itchyny/vim-cursorword' " Underlines the word under the cursor
     Plug 'https://github.com/pedrohdz/vim-yaml-folds' " YAML, RAML, EYAML & SaltStack SLS folding for Vim
-    " Plug 'https://github.com/chrisbra/csv.vim' " A Filetype plugin for csv files
+    Plug 'https://github.com/chrisbra/csv.vim' " A Filetype plugin for csv files
     Plug 'https://github.com/heavenshell/vim-pydocstring', { 'do': 'make install', 'for': 'python' } " Generate Python docstring to your Python source code.
-    " Plug 'https://github.com/tmhedberg/SimpylFold' " No-BS Python code folding for Vim
+    Plug 'https://github.com/tmhedberg/SimpylFold' " No-BS Python code folding for Vim
     Plug 'https://github.com/Konfekt/FastFold' " Speed up Vim by updating folds only when called-for
     " Plug 'https://github.com/tell-k/vim-autopep8' " autopep8 plugin for Vim
     " Perl
@@ -141,7 +142,9 @@ if !&compatible
     " Plug 'https://github.com/vim-perl/vim-perl' " Support for Perl 5 in Vim
     " View
     Plug 'https://github.com/vim-airline/vim-airline' " lean & mean status/tabline for vim that's light as air
-    Plug 'https://github.com/vim-airline/vim-airline-themes' " A collection of themes for vim-airline
+    " Plug 'https://github.com/vim-airline/vim-airline-themes' " A collection of themes for vim-airline
+    " Plug 'https://github.com/edkolev/promptline.vim' " Generate a fast shell prompt with powerline symbols and airline colors
+    " Plug 'https://github.com/lambdalisue/vim-battery' " Show battery information on statusline/tabline of Neovim/Vim
     Plug 'https://github.com/morhetz/gruvbox' " Retro groove color scheme for Vim
     " Plug 'https://github.com/sainnhe/gruvbox-material' " Gruvbox with Material Palette
     Plug 'https://github.com/junegunn/limelight.vim' " 🔦 All the world's indeed a stage and we are merely players
@@ -204,9 +207,10 @@ if !&compatible
         Plug 'https://github.com/darfink/vim-plist' " Add plist editing support to Vim
     endif
     if executable('git')
+        Plug 'https://github.com/tpope/vim-fugitive'        " A Git wrapper so awesome, it should be illegal
+        Plug 'https://github.com/rbong/vim-flog/' " A blazingly fast, stunningly beautiful, exceptionally powerful git branch viewer for Vim/Neovim.
         Plug 'https://github.com/rhysd/git-messenger.vim' " Vim and Neovim plugin to reveal the commit messages under the cursor
         Plug 'https://github.com/whiteinge/diffconflicts' " A better Vimdiff Git mergetool
-        Plug 'https://github.com/tpope/vim-fugitive'        " A Git wrapper so awesome, it should be illegal
         Plug 'https://github.com/rhysd/committia.vim'       " A Vim plugin for more pleasant editing on commit messages
         Plug 'https://github.com/junegunn/gv.vim' " A git commit browser in Vim
         if has('nvim') || has('patch-8.0.902')
@@ -232,16 +236,26 @@ if !&compatible
     if (v:version > 704)
         Plug 'https://github.com/preservim/vim-indent-guides' " A Vim plugin for visually displaying indent levels in code
     endif
+    Plug 'https://github.com/preservim/vim-pencil' " Rethinking Vim as a tool for writing
+    Plug 'https://github.com/preservim/vim-wordchipper' " Power tool for shredding text in Insert mode
+    Plug 'https://github.com/preservim/vim-wordy' " Uncover usage problems in your writing
+    Plug 'https://github.com/preservim/vim-wheel' " Screen-anchored cursor movement for Vim
+    " Plug 'https://github.com/tpope/vim-abolish' " abolish.vim: Work with several variants of a word at once
+    Plug 'https://github.com/preservim/vim-litecorrect' " Lightweight auto-correction for Vim
+    Plug 'https://github.com/preservim/vim-lexical' " Build on Vim’s spell/thes/dict completion
     if has('signs')
         Plug 'https://github.com/kshenoy/vim-signature' " Plugin to toggle, display and navigate marks
     endif
-    Plug 'https://github.com/psliwka/vim-smoothie' " Smooth scrolling for Vim done right🥤
+    " Plug 'https://github.com/psliwka/vim-smoothie' " Smooth scrolling for Vim done right🥤
     " vim-devicons should be at the end
     Plug 'https://github.com/ryanoasis/vim-devicons' " Adds file type icons to Vim plugins such as: NERDTree, vim-airline, CtrlP, unite, Denite, lightline, vim-startify and many more
     Plug 'https://github.com/lambdalisue/vim-nerdfont' " 👓 Fundemental plugin to handle Nerd Fonts in Vim
-    Plug 'https://github.com/wellle/context.vim' " Vim plugin that shows the context of the currently visible buffer contents
+    " Plug 'https://github.com/wellle/context.vim' " Vim plugin that shows the context of the currently visible buffer contents
     " Plug 'https://github.com/vim-scripts/AnsiEsc.vim' " ansi escape sequences concealed, but highlighted as specified (conceal)
     Plug 'https://github.com/powerman/vim-plugin-AnsiEsc' " ansi escape sequences concealed, but highlighted as specified (conceal)
+    if executable('tmux')
+        Plug 'https://github.com/edkolev/tmuxline.vim' " Simple tmux statusline generator with support for powerline symbols and statusline / airline / lightline integration
+    endif
 
     call plug#end()
     " delc PlugUpgrade
@@ -336,7 +350,7 @@ set formatoptions-=t                            " noautowrap text using textwidt
 set formatoptions-=c                            " autowrap comments using textwidth
 set formatoptions+=o                            " automatically insert the current comment leader after hitting 'o' in Normal mode
 set formatoptions+=r                            " as above but after <Enter> in Insert mode
-
+set spelllang=en,pl
 " set diffopt+=iwhite     " ignore white spaces
 set diffopt+=context:3  " context for diff
 if has('patch-8.1.0360')
@@ -443,8 +457,8 @@ nnoremap Q gqap
 vmap <silent> // y/<C-R>=escape(@", '\\/.*$^~[]')<CR><CR>
 
 " change search mapping and don't jump
-nnoremap * g*``
-nnoremap # g#``
+nnoremap # g*``
+nnoremap * g#``
 " nnoremap g* *``
 " nnoremap g# #``
 
@@ -474,12 +488,63 @@ let g:pluginIsEnabledVerbose = 0
 
 
 """ Plugins configuration {{{
+" Plugin: vim-lexical
+if plugin#isEnabled('vim-lexical')
+    let g:lexical#spelllang = ['en','pl',]
+    augroup lexical
+        autocmd!
+        autocmd FileType markdown,mkd call lexical#init()
+        autocmd FileType textile call lexical#init()
+        autocmd FileType text call lexical#init({ 'spell': 0 })
+    augroup END
+endif
+" Plugin: vim-litecorrect
+if plugin#isEnabled('vim-litecorrect')
+    let user_dict = {
+        \ 'maybe': ['mabye'],
+        \ 'medieval': ['medival', 'mediaeval', 'medevil'],
+        \ 'then': ['hten'],
+        \ }
+    augroup litecorrect
+        autocmd!
+        autocmd FileType markdown,mkd call litecorrect#init()
+        autocmd FileType textile call litecorrect#init()
+    augroup END
+endif
+
+" Plugin: vim-wheel
+if plugin#isEnabled('vim-wheel')
+    let g:wheel#map#up   = '<up>'
+    let g:wheel#map#down = '<down>'
+    let g:wheel#line#threshold = 5      " lines from start or end
+    let g:wheel#map#mouse = 1       " 1=natural, 0=disable, -1=reverse
+    let g:wheel#scroll_on_wrap = 1      " 0=disable, 1=enable (default)
+endif
+
+" Plugin: Wordy
+if plugin#isEnabled('vim-wordy')
+    if !&wildcharm | set wildcharm=<C-z> | endif
+    execute 'nnoremap <leader>w :Wordy<space>'.nr2char(&wildcharm)
+    noremap <silent> <F8> :<C-u>NextWordy<cr>
+    xnoremap <silent> <F8> :<C-u>NextWordy<cr>
+    inoremap <silent> <F8> <C-o>:NextWordy<cr>
+endif
+
+" Plugin: SyntaxAttr
+if plugin#isEnabled('SyntaxAttr.vim')
+    nmap <F2> :call SyntaxAttr()<CR>
+endif
+
+" Plugin: vim-markdown
+if plugin#isEnabled('vim-markdown')
+endif
 
 " Plugin: SimpylFold
 if plugin#isEnabled('SimpylFold')
     " let g:SimpylFold_docstring_preview=1
     let g:SimpylFold_fold_docstring=0
 endif
+
 " Plugin: ShellCheck
 if plugin#isEnabled('vim-shellcheck')
     " let g:shellcheck_qf_open='botright copen 10'
@@ -644,7 +709,6 @@ if plugin#isEnabled('gruvbox-material')
     " let g:gruvbox_material_background = 'soft'
     " For better performance
     let g:gruvbox_material_better_performance = 1
-    " let g:airline_theme = 'gruvbox_material'
     " Available values: 'material'(default), 'mix', 'original'
     " let g:gruvbox_material_foreground = 'material'
     let g:gruvbox_material_enable_bold = 1
@@ -711,6 +775,8 @@ endif
 
 "" Plugin: bash-support {{{
 if plugin#isEnabled('bash-support')
+    let g:BASH_Ctrl_j = 'no'
+    let g:BASH_Ctrl_d = 'no'
     if g:UNIX
         " see ~/.config/vim/local.vim
         let g:BASH_LocalTemplateFile    = VIMRC . '/templates/bash-support/templates/Templates'
@@ -777,12 +843,10 @@ if plugin#isEnabled('coc.nvim')
     let g:coc_global_extensions = [
                 \ 'coc-copilot',
                 \ 'coc-fzf-preview',
-                \ 'coc-git',
                 \ 'coc-highlight',
                 \ 'coc-json',
                 \ 'coc-omni',
                 \ 'coc-pairs',
-                \ 'coc-prettier',
                 \ 'coc-sh',
                 \ 'coc-snippets',
                 \ 'coc-svg',
@@ -793,6 +857,8 @@ if plugin#isEnabled('coc.nvim')
                 \ 'coc-yaml',
                 \]
                 " \ 'coc-python',
+                " \ 'coc-git',
+                " \ 'coc-prettier',
     " Use tab for trigger completion with characters ahead and navigate
     " NOTE: There's always complete item selected by default, you may want to enable
     " no select by `"suggest.noselect": true` in your configuration file
@@ -1031,8 +1097,33 @@ endif
 
 "" Plugin: vim-airline {{{
 if plugin#isEnabled('vim-airline')
+    " Symbols
+    " for i in items(g:airline_symbols)|echo i[0] .. ':-'.. i[1] .. '-'|endfor
+    " let g:airline_section_a = ''
+    " let g:airline_section_b = '%{airline#util#wrap(airline#extensions#branch#get_head(),80)}'
+    " let g:airline_section_b = '%{airline#extensions#branch#get_head()}'
+    " let g:airline_section_b = ''
+    let g:airline_section_c = '%F'
+    " let g:airline_section_x = ''
+    " let g:airline_section_y = ''
+    " let g:airline_section_z = ''
+    " let g:airline_section_gutter = ''
     let g:airline_powerline_fonts = 1
-    let g:airline_skip_empty_sections = 1
+    " let g:airline_symbols_ascii = 1
+    " let g:airline_skip_empty_sections = 1
+    let g:airline#extensions#tabline#enabled = 1
+    " let g:airline_statusline_ontop=1
+    " let g:airline_extensions = [] " disable all extensions
+    let g:airline#extensions#hunks#enabled = 0    " wyłącz podsumowanie zmian (hunks)
+    function! WindowNumber(...)
+        let builder = a:1
+        let context = a:2
+        call builder.add_section('airline_b', '%{tabpagewinnr(tabpagenr())}')
+        return 0
+    endfunction
+
+    call airline#add_statusline_func('WindowNumber')
+    call airline#add_inactive_statusline_func('WindowNumber')
 endif
 "" }}}
 
